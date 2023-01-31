@@ -1,5 +1,5 @@
 // Funções principais do Agendamento
-void Menu(void);
+
 void CadastroLoja();
 void CadastroCliente();
 void RealizarAgendamento();
