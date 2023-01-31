@@ -25,7 +25,7 @@ Este projeto esta sobe a licença MIT.
 
 Projeto feito com ❤️ por:  
 :stuck_out_tongue_winking_eye: [Arthur Benjamin]()  
-🥰 [Jamilly Vitorya]()  
+🥰 [Jamilly Vitorya](https://www.linkedin.com/in/jamilly-barbosa/)  
 :sunglasses: [João Felipe Rodrigues](https://www.linkedin.com/in/jfcarlos/)   
 :four_leaf_clover:  [João Rios]()  
 🕶️ [Kevin Brunno]()  
