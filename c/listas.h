@@ -2,6 +2,8 @@
 #define LIST_H
 
 // Variaveis Globais
+typedef struct endereco End;
+typedef struct cadastro Cad;
 typedef struct no No;
 typedef struct lista List;
 

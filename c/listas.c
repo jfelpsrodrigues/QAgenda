@@ -5,10 +5,26 @@
 #include <ctype.h>
 #include "listas.h"
 
+struct endereco
+{
+    char rua[128];
+    char setor[128];
+    char cidade[128];
+    char estado[128];
+    char cep[10];
+};
+
+struct cadastro
+{
+    char nome[128];
+    End *endereco;
+    char servico[128];
+    char horario[10];
+};
 
 struct no
 {
-    int chave;
+    Cad *chave;
     char str[10]; // A string armazenada no nó
     struct no *prox;
 };
