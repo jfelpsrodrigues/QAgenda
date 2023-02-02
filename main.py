@@ -6,11 +6,13 @@ back = '#f6ffec'
 collor_font = '#333652'
 obj_collor = '#FAD02C'
 button_collor = '#417B5A'
+button_collor_b = "#8EB1C7"
 black = "black"
 white = 'white'
 
 # Fonts -----------------------------
 font_title = 'Roboto 18'
+font_title_b = 'Roboto 18 bold'
 font_obj = 'Roboto 1'
 font_label = 'Roboto 12'
 font_button = 'Roboto 13'
@@ -25,10 +27,41 @@ class Registration(Tk):
         self.config(bg=bg)
         self.resizable(width=width, height=height)
 
+        self.widgets_init_sub()
+
     def widgets_sub(self):
+
         # Frames
-        self.frame_1 = Frame(self, width=350, height=50, background=black, relief='flat')
-        self.frame_2 = Frame(self, width=350, height=300, background=black, relief='flat')
+        self.frame_1 = Frame(self, width=300, height=35, background=back, relief='flat')
+        self.frame_2 = Frame(self, width=320, height=321, background=back, relief='flat')
+        self.frame_3 = Frame(self, width=320, height=321, background=back, relief='flat')
+        self.frame_4 = Frame(self, width=710, height=50, background=back, relief='flat')
+
+        # Objects
+        self.label_line_div =  Label(self, text="", font=(font_obj), height=135, bg=button_collor_b, fg=back, relief='flat')
+        self.lab_line = Label(self.frame_1, text="", anchor=N, font=(font_obj), width=300, bg=obj_collor, fg=back, relief='flat')
+
+        # Labels Text
+        self.lab_title = Label(self.frame_1, text="Cadastre-se no QAgenda!   ", anchor=N, font=(font_title_b), bg=back, fg=collor_font, relief='flat')
+
+        
+
+    def widgets_init_sub(self):
+        self.widgets_sub()
+
+        # Frames Init
+        self.frame_1.place(x=50, y=5)
+        self.frame_2.place(x=50, y=56)
+        self.frame_3.place(x=390, y=56)
+        self.frame_4.place(x=20, y=440)
+
+        # Objects
+        self.label_line_div.place(x=377, y=20)
+        self.lab_line.place(x=0, y=30)
+
+        # Labels Text
+        self.lab_title.place(x=0, y=0)
+
 
 
 
@@ -86,7 +119,7 @@ class Login(Tk):
     
     def new_window_sub(self):
         self.destroy()
-        subs = Registration("700x473")
+        subs = Registration("750x500")
         subs.mainloop()
 
 # ----------- Main ----------------
