@@ -3,6 +3,7 @@
 #include <string.h>
 #include <stdbool.h>
 #include <ctype.h>
+#include "qAgenda.h"
 #include "listas.h"
 
 struct endereco
@@ -18,13 +19,13 @@ struct cadastro
 {
     char nome[128];
     End *endereco;
-    char servico[128];
-    char horario[10];
 };
 
 struct no
 {
     Cad *chave;
+    char servico[128];
+    char horario[5];
     char str[10]; // A string armazenada no nó
     struct no *prox;
 };
@@ -267,160 +268,3 @@ void destruirLista(List *l){
     free(l);
 }
 
-void printCaminho (List *l) {   //Imprime o Caminho de retorno pelos valores da lista
-    No *aux;
-    aux = l->inicio;
-	
-	while (aux != NULL)     //percorre a lista para impressão
-    {   
-        printf("Vire a ");
-        extenso_direcao(aux->str);  //Imprime as direcoes
-		
-		if(aux->prox == NULL) {
-			printf(" na sua CASA\n");   //Impressao final (chegada no destino de retorno)
-		}else{
-			printf(" na rua ");
-			if(aux->prox->str[4] == 'p') printf("PRINCIPAL\n");
-			else if(aux->prox->str[4] == 'c') printf("CEREJA\n");
-			else if(aux->prox->str[4] == 'f') printf("FRAMBOESA\n");
-			else{
-				extenso(aux->prox->str);    //Imprime o nome da rua
-			}
-		}
-        aux = aux->prox;
-    }
-}
-
-void extenso1(int rua){
-	
-	int c, d, u;			//trancreve por extenso qualquer numero entre 1 e 999
-	
-	c = rua / 100;			//centenas
-	d = (rua % 100) / 10;	//dezenas
-	u = rua % 10;			//unidades
-	   
-	if(rua == 100) printf("CEM");
-	else{
-		switch(c){	//imprime centenas
-			case 1 : printf("CENTO ");
-				break;
-			case 2 : printf("DUZENTOS ");
-				break;
-			case 3 : printf("TREZENTOS ");
-				break;
-			case 4 : printf("QUATROCENTOS ");
-				break;
-			case 5 : printf("QUINHETOS ");
-				break;
-			case 6 : printf("SEISCENTOS ");
-				break;
-			case 7 : printf("SETECENTOS ");
-				break;
-			case 8 : printf("OITOCENTOS ");
-				break;
-			case 9 : printf("NOVECENTOS ");
-				break;
-		}		
-		if(c != 0 && (d != 0 || u !=0))
-			printf("E ");
-			switch(d){	//imprime dezenas
-			case 1 : 
-					switch(u){	//caso esteja entre 10 e 20
-						case 0 : printf("DEZ ");
-							break;
-						case 1 : printf("ONZE ");
-							break;
-						case 2 : printf("DOZE ");
-							break;
-						case 3 : printf("TREZE ");
-							break;
-						case 4 : printf("QUATORZE ");
-							break;
-						case 5 : printf("QUINZE ");
-							break;
-						case 6 : printf("DEZESEIS ");
-							break;
-						case 7 : printf("DEZESETE ");
-							break;
-						case 8 : printf("DEZOITO ");
-							break;
-						case 9 : printf("DEZENOVE ");
-							break;					
-					}
-				break;
-			case 2 : printf("VINTE ");
-				break;
-			case 3 : printf("TRINTA ");
-				break;
-			case 4 : printf("QUARENTA ");
-				break;
-			case 5 : printf("CINQUENTA ");
-				break;
-			case 6 : printf("SESSENTA ");
-				break;
-			case 7 : printf("SETENTA ");
-				break;
-			case 8 : printf("OITENTA ");
-				break;
-			case 9 : printf("NOVENTA ");
-				break;
-		}
-		
-		if(d > 1 && u !=0){
-			printf("E ");
-        }if(d != 1){
-			switch(u){	//imprime unidades
-			    case 1 : printf("UM ");
-			    	break;
-			    case 2 : printf("DOIS ");
-			    	break;
-			    case 3 : printf("TRES ");
-			    	break;
-			    case 4 : printf("QUATRO ");
-			    	break;
-			    case 5 : printf("CINCO ");
-			    	break;
-			    case 6 : printf("SEIS ");
-			    	break;
-			    case 7 : printf("SETE ");
-			    	break;
-			    case 8 : printf("OITO ");
-			    	break;
-			    case 9 : printf("NOVE ");
-			    	break;
-			}
-        }
-	}
-    printf("\n");
-}
-
-void extenso(char * rua){		//Converte os numeros(char) para numeros(int) e chama a funcao *extenso1*
-    long int valor_rua=0;
-	char *aux;
-	char *str = rua;
-	int i=0, j;
-
-	for(j=4; str[j] != ')'; j++) {
-		if(isdigit(str[j]) == 0) {	        //Ignora o caractere anterior ao numero
-			continue;
-		}else{
-			aux[i] = str[j];		        //String (aux) recebe os numeros(char) da string de entrada
-			i++;
-		}
-	}
-	valor_rua = strtol(aux, &aux, 10);	    //converte o numero na string para um numero(long int)
-
-    if(isdigit(rua[4]) == 0){                                 //Verifica a presenca de caractere
-        if(rua[5] == ')') printf("%c\n", toupper(rua[4]));
-        else {
-            printf("%c%ld\n", toupper(rua[4]) , valor_rua);  //Torna o caractere maiusculo e imprime
-        }
-    }else{
-        extenso1(valor_rua);			//Chama a funcao que lida com o nome das ruas
-    }
-}
-void extenso_direcao(char * sentido){                      
-    //imprime o sentido determinado conforme a letra da entrada
-    if(sentido[1]=='d') printf("ESQUERDA");
-    else if(sentido[1]=='e') printf("DIREITA");
-}
