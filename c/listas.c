@@ -139,6 +139,10 @@ Cad retornarValor(List *l, int chave){
     return aux->dados; // retornar o nó encontrado;
 }
 
+Cad retornarValorInicial(List *l){
+    return l->inicio->dados;
+}
+
 void removerCelula(List *l, int chave){
     No *antes, *depois, *ptr;
     ptr = l->inicio;

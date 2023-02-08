@@ -45,6 +45,11 @@ void addChaveDepois(List *l, int identidade, Cad a);
 /// @return Retorna o nó procurado
 Cad retornarValor(List *l, int chave);
 
+/// @brief Retorna o primeiro valor da lista
+/// @param l A lista que deseja
+/// @return A struct de dados da lista
+Cad retornarValorInicial(List *l);
+
 /// @brief Remove um nó especifico da lista
 /// @param l Lista
 /// @param chave CPF/CNPJ do nó a ser removido

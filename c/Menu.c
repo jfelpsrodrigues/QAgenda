@@ -1,5 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#include "qAgenda.h"
+#include "listas.h"
 
 void Menu(void){
    
@@ -22,12 +25,20 @@ void Menu(void){
     scanf("%d", &num);
 
     while(num != 8){
+        List *l = criarListaVazia();
+        int opcao;
         switch(num){
             case 0: printf("[0] - Cadastrar de Loja\n");
-                // dados da chamada da função aqui 
+                l = LeListaLojas();
+                CadastroLoja(l, "gls", "SaoCarlos", "Lavanderia", 4561356498, 35);
+                EscreveListaLojas(l);
+                destruirLista(l);
                 break;
             case 1: printf("[1] - Cadastro de Cliente\n");  
-                // dados da chamada da função aqui 
+                l = LeListaClientes();
+                CadastroCliente(l, "Joao", "Bueno", 8472, 202103739, 18);
+                EscreveListaClientes(l);
+                destruirLista(l);
                 break;
             case 2:printf("[2] - Realizar Agendamento\n");  
                 // dados da chamada da função aqui 
@@ -52,4 +63,9 @@ void Menu(void){
         }
         Menu();
     }   
+}
+
+
+void main(){
+    Menu();
 }
