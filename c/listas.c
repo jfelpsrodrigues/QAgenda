@@ -6,27 +6,23 @@
 #include "qAgenda.h"
 #include "listas.h"
 
-struct endereco
-{
-    char rua[128];
-    char setor[128];
-    char cidade[128];
-    char estado[128];
-    char cep[10];
-};
-
-struct cadastro
-{
+struct cadastro{
+    // Geral
     char nome[128];
-    End *endereco;
+    char bairro[128];
+    int senha;
+    // Cliente
+    long int cpf_cnpj;
+    int idade;
+    // Estabelecimento
+    char ramo[128];
+    int horario;
+    int dia;
 };
 
 struct no
 {
-    Cad *chave;
-    char servico[128];
-    char horario[5];
-    char str[10]; // A string armazenada no nó
+    Cad dados;
     struct no *prox;
 };
 
@@ -58,13 +54,11 @@ List *criarListaVazia(void){
     return l;
 }
 
-List *criarListaChave(int chave, char str[]){
+List *criarListaChave(Cad a){
 	List *l = (List *)malloc(sizeof(List)); // Aloca a lista
     No *ptr = criarNo();
+    ptr->dados = a;
     if(l != NULL){
-        // Atualiza os valores do no criado
-        ptr->chave = chave;
-        strcpy(ptr->str, str);
         // Atualiza os valores da lista
         l->inicio = ptr;
         l->fim = ptr;
@@ -73,12 +67,10 @@ List *criarListaChave(int chave, char str[]){
     return l;
 }
 
-void addInicio(List *l, int chave, char str[]){
-    // Criando um No
-    No* ptr = criarNo();
-    ptr->chave = chave;
-    strcpy(ptr->str, str);
-    ptr->prox = NULL;    
+void addInicio(List *l, Cad a){
+    No *ptr = criarNo();
+    ptr->prox = NULL; // Verifica ele como null
+    ptr->dados = a;
     if(l->inicio == NULL){
         l->inicio = ptr;
         l->fim = ptr;
@@ -89,12 +81,10 @@ void addInicio(List *l, int chave, char str[]){
     l->tam++;
 }
 
-void addFim(List *l, int chave, char str[]){
+void addFim(List *l, Cad a){
     No *ptr = criarNo();
-    ptr->chave = chave;
-    strcpy(ptr->str, str);
+    ptr->dados = a;
     ptr->prox = NULL;
-
     if(l->fim == NULL){
         l->inicio = ptr;
     }else{
@@ -104,52 +94,31 @@ void addFim(List *l, int chave, char str[]){
     l->tam++;
 }
 
-void addOrdemCres(List *l, int num, char str[]){
-    No *ptr, *aux = l->inicio;
-    ptr = criarNo();
-    ptr->chave = num;
-    strcpy(ptr->str, str);
-
-    if(l->inicio == NULL || ptr->chave < l->inicio->chave){
-        addInicio(l, num, str);
-    }else{
-        while(aux->prox != NULL && ptr->chave > aux->prox->chave){
-            aux = aux->prox;
-        }
-        ptr->prox = aux->prox;
-        aux->prox = ptr;
-        while(aux->prox != NULL) aux = aux->prox;
-        l->fim = aux;
-    }
-}
-
-void addChaveAntes(List *l, int identidade, int novo, char str[]){ // Passa a lista, a determinada célula e o novo nó
-    No *anterior, *aux, *ptrNovo = criarNo();
-    ptrNovo->chave = novo;
-    strcpy(ptrNovo->str, str);
+void addChaveAntes(List *l, int id, Cad a){ // Passa a lista, a determinada célula e o novo nó
+    No *anterior, *aux, *ptr = criarNo();
+    ptr->dados = a;
     aux = l->inicio;
     anterior = aux;
 
-    while (aux->chave != identidade){ // procura o nó passado
+    while (aux->dados.cpf_cnpj != id){ // procura o nó passado
         anterior = aux;
         aux = aux->prox;
         if(aux == NULL){
-            printf("Erro no identificador: %d \n", identidade);
+            printf("Erro no identificador: %d \n", id);
             exit(-1);
         }
     }
-    ptrNovo->prox = aux; // atualiza o novo Nó na lista
-    anterior->prox = ptrNovo; // Faz o anterior apontar para o Novo
+    ptr->prox = aux; // atualiza o novo Nó na lista
+    anterior->prox = ptr; // Faz o anterior apontar para o Novo
     l->tam++;
 }
 
-void addChaveDepois(List *l, int identidade, char novo[]){
-    No *posterior, *aux, *ptrNovo = criarNo();
-    strcpy(ptrNovo->str, novo);
+void addChaveDepois(List *l, int identidade, Cad a){
+    No *posterior, *aux, *ptr = criarNo();
     aux = l->inicio;
     posterior = aux->prox;
 
-    while(aux->chave != identidade){
+    while(aux->dados.cpf_cnpj != identidade){
         aux = aux->prox; // Atualiza o auxiliar
         posterior = aux->prox; // Descobre o o proximo nó
         if(aux == NULL){
@@ -157,23 +126,23 @@ void addChaveDepois(List *l, int identidade, char novo[]){
             exit(-1);
         }
     }
-    ptrNovo->prox = posterior->prox; // O novo nó é inserido na lista
-    posterior->prox = ptrNovo; // O posterior aponta para o novo
+    ptr->prox = posterior->prox; // O novo nó é inserido na lista
+    posterior->prox = ptr; // O posterior aponta para o novo
     l->tam++;
 }
 
-char* retornarValor(List *l, int chave){
+Cad retornarValor(List *l, int chave){
     No *aux = l->inicio;
-    while(aux->chave != chave){ // procura a chave passada
+    while(aux->dados.cpf_cnpj != chave){ // procura a chave passada
         aux = aux->prox;
     }
-    return aux->str; // retornar o que está no nó;
+    return aux->dados; // retornar o nó encontrado;
 }
 
 void removerCelula(List *l, int chave){
     No *antes, *depois, *ptr;
     ptr = l->inicio;
-    while(ptr->chave != chave){ // Procura a celula
+    while(ptr->dados.cpf_cnpj != chave){ // Procura a celula
         antes = ptr;
         ptr = ptr->prox;
         depois = ptr->prox;
@@ -217,17 +186,6 @@ void removerFim(List *l){
     }
 }
 
-List* ordenarLista(List *l){
-    List *laux = criarListaVazia();
-    No *ptr = l->inicio; // No para percorrer a lista
-    while(ptr != NULL){
-        addOrdemCres(laux, ptr->chave, ptr->str);
-        ptr = ptr->prox;
-    }
-    free(l);
-    return laux;
-}
-
 List* concatenarListas(List *a, List *b){
     No *ptr, *aux;
     aux = criarNo();
@@ -249,7 +207,7 @@ void printLista(List *l){
     No *aux;
     aux = l->inicio;
     while (aux != NULL){ // percorre a lista printando cada item
-        printf("%s ", aux->str);
+        printf("%ld ", aux->dados.cpf_cnpj);
         aux = aux->prox;
     }
     printf("\n");
@@ -267,4 +225,3 @@ void destruirLista(List *l){
     }
     free(l);
 }
-
