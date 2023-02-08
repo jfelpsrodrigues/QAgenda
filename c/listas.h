@@ -3,6 +3,7 @@
 
 // Variaveis Globais
 typedef struct no No;
+typedef struct cadastro Cad;
 typedef struct lista List;
 
 No *criarNo(void);
@@ -12,51 +13,41 @@ No *criarNo(void);
 List *criarListaVazia(void);
 
 /// @brief Cria uma lista com o primeiro nó alocado
-/// @param chave Identidade do nó
-/// @param str Itém do nó
+/// @param ptr Um nó da lista já com informações 
 /// @return Lista com o primeiro nó alocado
-List *criarListaChave(int chave, char str[]); 
+List *criarListaChave(Cad a);
 
 /// @brief Adiciona um nó no inicio da lista
 /// @param l Lista já alocada
-/// @param chave Chave de identificação do nó 
-/// @param str Nova string da lista 
-void addInicio(List *l, int chave, char str[]);
+/// @param ptr Um nó já com informações
+void addInicio(List *l, Cad a);
 
 /// @brief Adiciona um nó no fim da lista
 /// @param l Lista já alocada
-/// @param chave Chave de identificação do nó 
-/// @param str Nova string da lista
-void addFim(List *l, int chave, char str[]);
-
-/// @brief Adiciona um nó em uma lista ordenada
-/// @param l Lista já alocada
-/// @param chave Chave de identificação do nó 
-/// @param str Nova string da lista
-void addOrdemCres(List *l, int num, char str[]);
+/// @param ptr Um nó ja com informações
+void addFim(List *l, Cad a);
 
 /// @brief Adiciona um nó antes de um especificado
 /// @param l Lista já alocada
-/// @param identidade Nó de referencia
-/// @param novo Identificador do novo nó
-/// @param str Nova string da lista
-void addChaveAntes(List *l, int identidade, int novo, char str[]);
+/// @param id CPF/CNPJ do nó ao qual você deseja que seja o posterior
+/// @param ptr Novo nó da lista
+void addChaveAntes(List *l, int id, Cad a);
 
 /// @brief Adiciona um nó depois do nó referenciado
 /// @param l Lista 
-/// @param identidade Id do nó
-/// @param novo Nova string da lista
-void addChaveDepois(List *l, int identidade, char novo[]);
+/// @param identidade CPF/CNPJ do nó ao qual você deseja que seja o anterior
+/// @param ptr Novo nó da lista
+void addChaveDepois(List *l, int identidade, Cad a);
 
 /// @brief Busca um valor especifico do lista
 /// @param l Lista
-/// @param chave Identidade do nó buscado
-/// @return String dentro do nó
-char* retornarValor(List *l, int chave);
+/// @param chave CPF/CNPJ do nó buscado
+/// @return Retorna o nó procurado
+Cad retornarValor(List *l, int chave);
 
 /// @brief Remove um nó especifico da lista
 /// @param l Lista
-/// @param chave Identidade do nó a ser removido
+/// @param chave CPF/CNPJ do nó a ser removido
 void removerCelula(List *l, int chave); 
 
 /// @brief Remove o primeiro nó da lista
@@ -66,11 +57,6 @@ void removerInicio(List *l);
 /// @brief Remove o ultimo nó da lista
 /// @param l Lista
 void removerFim(List *l);
-
-/// @brief Função de ordenação da lista em ordem crescente
-/// @param l Lista
-/// @return Lista ordenada em ordem crescente
-List* ordenarLista(List *l);
 
 /// @brief Concatena duas listas distintas
 /// @param a Lista 1
