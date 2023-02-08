@@ -44,10 +44,9 @@ void CadastroCliente(List *t,char *nome,char *bairro, int *senha, long int *cpf_
     a.bairro = bairro;
     a.senha = senha;
     a.cpf_cnpj = cpf_cnpj;
-    a.ramo = ramo;
-   
-
-    addFim(t, a);
+    a.idade = idade;
+    
+    addFim(t, c);
     printf("\n");
 }
 
