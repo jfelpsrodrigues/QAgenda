@@ -1,5 +1,6 @@
 from tkinter import *
 import tkinter
+import csv
 
 # Collors ---------------------------
 back = '#f6ffec'
@@ -188,7 +189,7 @@ class Login(Tk):
         self.entry_pass = Entry(self.frame_2, width=23, bg=white, fg=black, font=(font_label), highlightthickness=1, show='*', relief='flat')
         
         # Buttons
-        self.button_confirm = Button(self.frame_2, text="Entrar",width=10, height=1, relief='flat', font=(font_button), highlightthickness=1, bg=button_collor, fg=back)
+        self.button_confirm = Button(self.frame_2, text="Entrar", command=self.search_login, width=10, height=1, relief='flat', font=(font_button), highlightthickness=1, bg=button_collor, fg=back)
         self.button_inscr = Button(self.frame_2, text="Cadastrar", command=self.new_window_sub, width=10, anchor=N, font=(font_button_ext), highlightthickness=-1, bg=back, fg=collor_font, relief='flat')
         self.button_lost = Button(self.frame_2, text="Esqueceu a Senha?", width=15, anchor=N, font=(font_button_ext), highlightthickness=-1, bg=back, fg=collor_font, relief='flat')
         
@@ -214,6 +215,26 @@ class Login(Tk):
         self.button_confirm.place(x=115, y=150)
         self.button_inscr.place(x=38, y=200)
         self.button_lost.place(x=172, y=200)
+
+    def search_login(self):
+        name = str(self.entry_name.get())
+        passnumber = str(self.entry_pass.get())
+        # Busca nos estabelecimentos
+        with open("c/files/estabelecimentos.csv", 'r', encoding='utf-8') as arq:
+            lojas_csv = csv.reader(arq, delimiter=',')
+            for linha in lojas_csv:
+                if name == linha[0] and passnumber == linha[4]:
+                    print("deu certo")
+                    break
+                
+        # Busca nos clientes
+        with open('c/files/clientes.csv', 'r', encoding='utf-8') as arq:
+            clientes_csv = csv.reader(arq, delimiter=',')
+            for linha in clientes_csv:
+                if name == linha[0] and passnumber == linha[4]:
+                    print("deu certo")
+                    break
+        
     
     def new_window_sub(self):
         self.destroy()
