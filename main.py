@@ -1,5 +1,6 @@
 from tkinter import *
 import tkinter
+from tkinter import ttk
 import csv
 import os
 
@@ -9,6 +10,7 @@ collor_font = '#333652'
 obj_collor = '#FAD02C'
 button_collor = '#417B5A'
 button_collor_b = "#8EB1C7"
+button_collor_r = "#55449E"
 grey = '#d9d9d9'
 black = "black"
 white = 'white'
@@ -50,8 +52,8 @@ def business_exists(name_file, id):
     
     return True
 
-# Cadastro ------------------------------------------------------
-class Registration(Tk):
+# Login ------------------------------------------------------
+class Login(Tk):
     def __init__(self, geometry, width=False, height=False, bg=back):
         super().__init__()
 
@@ -60,8 +62,90 @@ class Registration(Tk):
         self.config(bg=bg)
         self.resizable(width=width, height=height)
 
-        self.state = -1 # O valor de 0 será para o cliente e de 1 para o estabelecimento
+        self.widgets_init_sigin()
 
+    def widgets_sigin(self):
+        # Frames
+        self.frame_1 = Frame(self, width=350, height=50, background=back, relief='flat')
+        self.frame_2 = Frame(self, width=350, height=300, background=back, relief='flat')
+
+        # Labels
+        self.lab_login = Label(self.frame_1, text="Login", anchor=NE, font=(font_title), bg=back, fg=collor_font, relief='flat')
+        self.lab_line = Label(self.frame_1, text="", anchor=NW, font=(font_obj), width=300, bg=obj_collor, fg=back, relief='flat')
+        self.lab_name = Label(self.frame_2, text="CPF/CNPJ:", font=(font_label), bg=back, fg=collor_font, relief="flat")
+        self.lab_pass = Label(self.frame_2, text="Senha:", font=(font_label), bg=back, fg=collor_font, relief="flat")
+        
+        # Entry
+        self.entry_name = Entry(self.frame_2, width=23, bg=white, fg=black, font=(font_label), highlightthickness=1, relief='flat')
+        self.entry_pass = Entry(self.frame_2, width=23, bg=white, fg=black, font=(font_label), highlightthickness=1, show='*', relief='flat')
+        
+        # Buttons
+        self.button_confirm = Button(self.frame_2, text="Entrar", command=self.search_login, width=10, height=1, relief='flat', font=(font_button), highlightthickness=1, bg=button_collor, fg=back)
+        self.button_inscr = Button(self.frame_2, text="Cadastrar", command=self.new_window_sub, width=10, anchor=N, font=(font_button_ext), highlightthickness=-1, bg=back, fg=collor_font, relief='flat')
+        self.button_lost = Button(self.frame_2, text="Esqueceu a Senha?", width=15, anchor=N, font=(font_button_ext), highlightthickness=-1, bg=back, fg=collor_font, relief='flat')
+        
+
+    def widgets_init_sigin(self):
+        self.widgets_sigin()
+
+        # Frames Init
+        self.frame_1.grid(row=0, column=0, pady=2, sticky=NSEW)
+        self.frame_2.grid(row=1, column=0, pady=2, sticky=NSEW)
+
+        # Labels Init
+        self.lab_login.place(x=15, y=5)
+        self.lab_line.place(x=15, y=40)
+        self.lab_name.place(x=15, y=15)
+        self.lab_pass.place(x=15, y=60)
+
+        # Entry Init
+        self.entry_name.place(x=105, y=15)
+        self.entry_pass.place(x=105, y=60)
+
+        # Button Init
+        self.button_confirm.place(x=115, y=150)
+        self.button_inscr.place(x=38, y=200)
+        self.button_lost.place(x=172, y=200)
+
+    def search_login(self):
+        id = str(self.entry_name.get())
+        passnumber = str(self.entry_pass.get())
+        # Busca nos estabelecimentos
+        with open("c/files/estabelecimentos.csv", 'r', encoding='utf-8') as arq:
+            lojas_csv = csv.reader(arq, delimiter=',')
+            for linha in lojas_csv:
+                if id == linha[1] and passnumber == linha[4]:
+                    print("deu certo")
+                    break
+                
+        # Busca nos clientes
+        with open('c/files/clientes.csv', 'r', encoding='utf-8') as arq:
+            clientes_csv = csv.reader(arq, delimiter=',')
+            for linha in clientes_csv:
+                if id == linha[1] and passnumber == linha[4]:
+                    self.new_window_home(id=id, passnumber=passnumber)
+                    break
+    def new_window_home(self, id, passnumber):
+        self.destroy()
+        home = HomeClient(id, passnumber)
+        home.mainloop()
+
+    def new_window_sub(self):
+        self.destroy()
+        subs = Registration()
+        subs.mainloop()
+
+# Cadastro ------------------------------------------------------
+class Registration(Tk):
+    def __init__(self, width=False, height=False, bg=back):
+        super().__init__()
+
+        self.title("QAgenda")
+        self.geometry("750x500")
+        self.config(bg=bg)
+        self.resizable(width=width, height=height)
+
+        self.state = -1 # O valor de 0 será para o cliente e de 1 para o estabelecimento
 
         self.widgets_init_sub()
         self.ret_client()
@@ -219,88 +303,101 @@ class Registration(Tk):
         login = Login("350x350")
         login.mainloop()
 
-# Login ------------------------------------------------------
-class Login(Tk):
-    def __init__(self, geometry, width=False, height=False, bg=back):
+# Home Client ---------------------------------------------------------
+class HomeClient(Tk):
+    def __init__(self, id, passnumber, width=False, height=False, bg=back):
         super().__init__()
 
         self.title("QAgenda")
-        self.geometry(geometry)
+        self.geometry("750x500")
         self.config(bg=bg)
         self.resizable(width=width, height=height)
 
-        self.widgets_init_sigin()
+        self.id = id
+        self.passnumber = passnumber
 
-    def widgets_sigin(self):
-        # Frames
-        self.frame_1 = Frame(self, width=350, height=50, background=back, relief='flat')
-        self.frame_2 = Frame(self, width=350, height=300, background=back, relief='flat')
+        self.widgets_init_home()
+        
+    def widgets_sub(self):
+        # Frames -------------------------------------
+        self.frame_1 = Frame(self, width=300, height=35, background=back, relief='flat') # Frame do Title
+        self.frame_2 = Frame(self, width=320, height=321, background=back, relief='flat') # Frame do Agendamento
+        self.frame_3 = Frame(self, width=320, height=321, background=back, relief='flat') # Frame da lista de agendamento
+        self.frame_4 = Frame(self, width=710, height=50, background=back, relief='flat') # Frame rodape
 
-        # Labels
-        self.lab_login = Label(self.frame_1, text="Login", anchor=NE, font=(font_title), bg=back, fg=collor_font, relief='flat')
-        self.lab_line = Label(self.frame_1, text="", anchor=NW, font=(font_obj), width=300, bg=obj_collor, fg=back, relief='flat')
+        # Objects --------------------------------------
+        self.label_line_div =  Label(self, text="", font=(font_obj), height=135, bg=button_collor_b, fg=back, relief='flat')
+        self.lab_line = Label(self.frame_1, text="", anchor=N, font=(font_obj), width=280, bg=obj_collor, fg=back, relief='flat')
+
+        # Labels -----------------------------------
+        self.lab_title = Label(self.frame_1, text="Bem-Vindo ao QAgenda!   ", anchor=N, font=(font_title_b), bg=back, fg=collor_font, relief='flat')
+        self.lab_h2_one = Label(self.frame_2, text="Faça seu Agendamento! ", anchor=N, font=(font_title_b), bg=back, fg=collor_font, relief='flat')
+        self.lab_h2_two = Label(self.frame_3, text="Seus Agendamentos! ", anchor=N, font=(font_title_b), bg=back, fg=collor_font, relief='flat')
+        # Agendamento --------------------------------------
         self.lab_name = Label(self.frame_2, text="Nome:", font=(font_label), bg=back, fg=collor_font, relief="flat")
-        self.lab_pass = Label(self.frame_2, text="Senha:", font=(font_label), bg=back, fg=collor_font, relief="flat")
-        
-        # Entry
-        self.entry_name = Entry(self.frame_2, width=23, bg=white, fg=black, font=(font_label), highlightthickness=1, relief='flat')
-        self.entry_pass = Entry(self.frame_2, width=23, bg=white, fg=black, font=(font_label), highlightthickness=1, show='*', relief='flat')
-        
-        # Buttons
-        self.button_confirm = Button(self.frame_2, text="Entrar", command=self.search_login, width=10, height=1, relief='flat', font=(font_button), highlightthickness=1, bg=button_collor, fg=back)
-        self.button_inscr = Button(self.frame_2, text="Cadastrar", command=self.new_window_sub, width=10, anchor=N, font=(font_button_ext), highlightthickness=-1, bg=back, fg=collor_font, relief='flat')
-        self.button_lost = Button(self.frame_2, text="Esqueceu a Senha?", width=15, anchor=N, font=(font_button_ext), highlightthickness=-1, bg=back, fg=collor_font, relief='flat')
-        
+        self.lab_store = Label(self.frame_2, text="Loja:", font=(font_label), bg=back, fg=collor_font, relief="flat")
+        self.lab_serv = Label(self.frame_2, text="Serviço:", font=(font_label), bg=back, fg=collor_font, relief="flat")
+        self.lab_day = Label(self.frame_2, text="Dia:", font=(font_label), bg=back, fg=collor_font, relief="flat")
+        self.lab_hour = Label(self.frame_2, text="Horário:", font=(font_label), bg=back, fg=collor_font, relief="flat")
 
-    def widgets_init_sigin(self):
-        self.widgets_sigin()
+        # Entry --------------------------------
+        self.entry_name = Entry(self.frame_2, width=23, bg=white, fg=black, font=(font_label), highlightthickness=1, relief='flat')
+        self.combox_store = ttk.Combobox(self.frame_2, width=22, font=(font_label))
+        self.combox_serv = ttk.Combobox(self.frame_2, width=22, font=(font_label))
+        self.combox_day = ttk.Combobox(self.frame_2, width=22, font=(font_label))
+        self.combox_hour = ttk.Combobox(self.frame_2, width=22, font=(font_label))
+        # Entry Lista ------------------
+        self.list_agend = Listbox(self.frame_3, width=35, font=font_label,fg=collor_font)
+
+        # Buttons ------------------------------
+        self.button_confirm = Button(self.frame_4, text="Agendar", width=10, height=1, relief='flat', font=(font_button), highlightthickness=1, bg=button_collor, fg=back)
+        self.button_client = Button(self.frame_4, text="Remover", width=10, height=1, relief='flat', font=(font_button), highlightthickness=1, bg=button_collor_r, fg=back)
+        self.button_ret = Button(self.frame_4, text="Retornar", command=self.ret_login, width=10, anchor=N, font=(font_button_ext), highlightthickness=-1, bg=back, fg=collor_font, relief='flat')
+
+    def widgets_init_home(self):
+        self.widgets_sub()
 
         # Frames Init
-        self.frame_1.grid(row=0, column=0, pady=2, sticky=NSEW)
-        self.frame_2.grid(row=1, column=0, pady=2, sticky=NSEW)
+        self.frame_1.place(x=50, y=5)
+        self.frame_2.place(x=50, y=56)
+        self.frame_3.place(x=390, y=56)
+        self.frame_4.place(x=20, y=440)
 
-        # Labels Init
-        self.lab_login.place(x=15, y=5)
-        self.lab_line.place(x=15, y=40)
-        self.lab_name.place(x=15, y=15)
-        self.lab_pass.place(x=15, y=60)
+        # Objects
+        self.label_line_div.place(x=377, y=20)
+        self.lab_line.place(x=0, y=30)
 
-        # Entry Init
-        self.entry_name.place(x=105, y=15)
-        self.entry_pass.place(x=105, y=60)
+        # Labels Text ----------------------------
+        self.lab_title.place(x=0, y=0) # Posição Titulo
+        self.lab_h2_one.place(x=0, y=5) # Posição "Faca seu agendamento"
+        self.lab_h2_two.place(x=15, y=5) # Posiçao "Seus agendamentos"
+        # Labels Agendamento
+        self.lab_name.place(x=0, y=75)
+        self.lab_store.place(x=0, y=120)
+        self.lab_serv.place(x=0, y=168)
+        self.lab_day.place(x=0, y=215)
+        self.lab_hour.place(x=0, y=260)
 
-        # Button Init
-        self.button_confirm.place(x=115, y=150)
-        self.button_inscr.place(x=38, y=200)
-        self.button_lost.place(x=172, y=200)
+        # Entry --------------------------------
+        self.entry_name.place(x=90, y=75)
+        self.combox_store.place(x=90, y=120)
+        self.combox_serv.place(x=90, y=168)
+        self.combox_day.place(x=90, y=215)
+        self.combox_hour.place(x=90, y=260)
+        # Entry Agendamento
+        self.list_agend.place(x=15, y=75)
 
-    def search_login(self):
-        name = str(self.entry_name.get())
-        passnumber = str(self.entry_pass.get())
-        # Busca nos estabelecimentos
-        with open("c/files/estabelecimentos.csv", 'r', encoding='utf-8') as arq:
-            lojas_csv = csv.reader(arq, delimiter=',')
-            for linha in lojas_csv:
-                if name == linha[0] and passnumber == linha[4]:
-                    print("deu certo")
-                    break
-                
-        # Busca nos clientes
-        with open('c/files/clientes.csv', 'r', encoding='utf-8') as arq:
-            clientes_csv = csv.reader(arq, delimiter=',')
-            for linha in clientes_csv:
-                if name == linha[0] and passnumber == linha[4]:
-                    print("deu certo")
-                    break
-        
-    
-    def new_window_sub(self):
+        # Buttons -----------------------------------------
+        self.button_confirm.place(x=200, y=0)
+        self.button_client.place(x=400, y=0)
+        self.button_ret.place(x=0, y=15)
+
+    def ret_login(self):
         self.destroy()
-        subs = Registration("750x500")
-        subs.mainloop()
+        login = Login("350x350")
+        login.mainloop()
+
 
 # Main ----------------------------------------------------------------
 login = Login("350x350")
-
 login.mainloop()
-
