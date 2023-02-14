@@ -115,7 +115,7 @@ class Login(Tk):
             lojas_csv = csv.reader(arq, delimiter=',')
             for linha in lojas_csv:
                 if id == linha[1] and passnumber == linha[4]:
-                    print("deu certo")
+                    self.new_window_home_store(id=id, passnumber=passnumber)
                     break
                 
         # Busca nos clientes
@@ -123,11 +123,16 @@ class Login(Tk):
             clientes_csv = csv.reader(arq, delimiter=',')
             for linha in clientes_csv:
                 if id == linha[1] and passnumber == linha[4]:
-                    self.new_window_home(id=id, passnumber=passnumber)
+                    self.new_window_home_client(id=id, passnumber=passnumber)
                     break
-    def new_window_home(self, id, passnumber):
+    def new_window_home_client(self, id, passnumber):
         self.destroy()
         home = HomeClient(id, passnumber)
+        home.mainloop()
+
+    def new_window_home_store(self, id, passnumber):
+        self.destroy()
+        home = HomeStore(id, passnumber)
         home.mainloop()
 
     def new_window_sub(self):
@@ -333,12 +338,14 @@ class HomeClient(Tk):
         self.lab_title = Label(self.frame_1, text="Bem-Vindo ao QAgenda!   ", anchor=N, font=(font_title_b), bg=back, fg=collor_font, relief='flat')
         self.lab_h2_one = Label(self.frame_2, text="Faça seu Agendamento! ", anchor=N, font=(font_title_b), bg=back, fg=collor_font, relief='flat')
         self.lab_h2_two = Label(self.frame_3, text="Seus Agendamentos! ", anchor=N, font=(font_title_b), bg=back, fg=collor_font, relief='flat')
-        # Agendamento --------------------------------------
+        # Agendamento
         self.lab_name = Label(self.frame_2, text="Nome:", font=(font_label), bg=back, fg=collor_font, relief="flat")
         self.lab_store = Label(self.frame_2, text="Loja:", font=(font_label), bg=back, fg=collor_font, relief="flat")
         self.lab_serv = Label(self.frame_2, text="Serviço:", font=(font_label), bg=back, fg=collor_font, relief="flat")
         self.lab_day = Label(self.frame_2, text="Dia:", font=(font_label), bg=back, fg=collor_font, relief="flat")
         self.lab_hour = Label(self.frame_2, text="Horário:", font=(font_label), bg=back, fg=collor_font, relief="flat")
+        # Lista 
+        self.lab_list = Label(self.frame_3, text="Escolha a Loja:", font=(font_label), bg=back, fg=collor_font, relief="flat")
 
         # Entry --------------------------------
         self.entry_name = Entry(self.frame_2, width=23, bg=white, fg=black, font=(font_label), highlightthickness=1, relief='flat')
@@ -347,6 +354,7 @@ class HomeClient(Tk):
         self.combox_day = ttk.Combobox(self.frame_2, width=22, font=(font_label))
         self.combox_hour = ttk.Combobox(self.frame_2, width=22, font=(font_label))
         # Entry Lista ------------------
+        self.combox_list = ttk.Combobox(self.frame_3, width=19, font=(font_label))
         self.list_agend = Listbox(self.frame_3, width=35, font=font_label,fg=collor_font)
 
         # Buttons ------------------------------
@@ -377,6 +385,8 @@ class HomeClient(Tk):
         self.lab_serv.place(x=0, y=168)
         self.lab_day.place(x=0, y=215)
         self.lab_hour.place(x=0, y=260)
+        # Label list
+        self.lab_list.place(x=15, y=55)
 
         # Entry --------------------------------
         self.entry_name.place(x=90, y=75)
@@ -384,6 +394,93 @@ class HomeClient(Tk):
         self.combox_serv.place(x=90, y=168)
         self.combox_day.place(x=90, y=215)
         self.combox_hour.place(x=90, y=260)
+        # Entry Agendamento
+        self.combox_list.place(x=130, y=55)
+        self.list_agend.place(x=15, y=85)
+
+        # Buttons -----------------------------------------
+        self.button_confirm.place(x=200, y=0)
+        self.button_client.place(x=400, y=0)
+        self.button_ret.place(x=0, y=15)
+
+    def ret_login(self):
+        self.destroy()
+        login = Login("350x350")
+        login.mainloop()
+
+# Home Store ---------------------------------------------------------
+class HomeStore(Tk):
+    def __init__(self, id, passnumber, width=False, height=False, bg=back):
+        super().__init__()
+
+        self.title("QAgenda")
+        self.geometry("750x500")
+        self.config(bg=bg)
+        self.resizable(width=width, height=height)
+
+        self.id = id
+        self.passnumber = passnumber
+
+        self.widgets_init_home()
+        
+    def widgets_sub(self):
+        # Frames -------------------------------------
+        self.frame_1 = Frame(self, width=300, height=35, background=back, relief='flat') # Frame do Title
+        self.frame_2 = Frame(self, width=320, height=321, background=back, relief='flat') # Frame do Agendamento
+        self.frame_3 = Frame(self, width=320, height=321, background=back, relief='flat') # Frame da lista de agendamento
+        self.frame_4 = Frame(self, width=710, height=50, background=back, relief='flat') # Frame rodape
+
+        # Objects --------------------------------------
+        self.label_line_div =  Label(self, text="", font=(font_obj), height=135, bg=button_collor_b, fg=back, relief='flat')
+        self.lab_line = Label(self.frame_1, text="", anchor=N, font=(font_obj), width=280, bg=obj_collor, fg=back, relief='flat')
+
+        # Labels -----------------------------------
+        self.lab_title = Label(self.frame_1, text="Bem-Vindo ao QAgenda!   ", anchor=N, font=(font_title_b), bg=back, fg=collor_font, relief='flat')
+        self.lab_h2_one = Label(self.frame_2, text="Cadastre seus Serviços!", anchor=N, font=(font_title_b), bg=back, fg=collor_font, relief='flat')
+        self.lab_h2_two = Label(self.frame_3, text="Seus Agendamentos!", anchor=N, font=(font_title_b), bg=back, fg=collor_font, relief='flat')
+        # Agendamento --------------------------------------
+        self.lab_name = Label(self.frame_2, text="Empresa:", font=(font_label), bg=back, fg=collor_font, relief="flat")
+        self.lab_serv = Label(self.frame_2, text="Serviço:", font=(font_label), bg=back, fg=collor_font, relief="flat")
+        self.lab_pay = Label(self.frame_2, text="Preço:", font=(font_label), bg=back, fg=collor_font, relief="flat")
+
+        # Entry --------------------------------
+        self.entry_name = Entry(self.frame_2, width=23, bg=white, fg=black, font=(font_label), highlightthickness=1, relief='flat')
+        self.entry_serv = Entry(self.frame_2, width=23, bg=white, fg=black, font=(font_label), highlightthickness=1, relief='flat')
+        self.entry_pay = Entry(self.frame_2, width=23, bg=white, fg=black, font=(font_label), highlightthickness=1, relief='flat')
+        # Entry Lista ------------------
+        self.list_agend = Listbox(self.frame_3, width=35, font=font_label,fg=collor_font)
+
+        # Buttons ------------------------------
+        self.button_confirm = Button(self.frame_4, text="Cadastrar", width=10, height=1, relief='flat', font=(font_button), highlightthickness=1, bg=button_collor, fg=back)
+        self.button_client = Button(self.frame_4, text="Remover", width=10, height=1, relief='flat', font=(font_button), highlightthickness=1, bg=button_collor_r, fg=back)
+        self.button_ret = Button(self.frame_4, text="Retornar", command=self.ret_login, width=10, anchor=N, font=(font_button_ext), highlightthickness=-1, bg=back, fg=collor_font, relief='flat')
+
+    def widgets_init_home(self):
+        self.widgets_sub()
+
+        # Frames Init
+        self.frame_1.place(x=50, y=5)
+        self.frame_2.place(x=50, y=56)
+        self.frame_3.place(x=390, y=56)
+        self.frame_4.place(x=20, y=440)
+
+        # Objects
+        self.label_line_div.place(x=377, y=20)
+        self.lab_line.place(x=0, y=30)
+
+        # Labels Text ----------------------------
+        self.lab_title.place(x=0, y=0) # Posição Titulo
+        self.lab_h2_one.place(x=0, y=5) # Posição "Faca seu agendamento"
+        self.lab_h2_two.place(x=15, y=5) # Posiçao "Seus agendamentos"
+        # Labels Agendamento
+        self.lab_name.place(x=0, y=120)
+        self.lab_serv.place(x=0, y=165)
+        self.lab_pay.place(x=0, y=210)
+
+        # Entry --------------------------------
+        self.entry_name.place(x=90, y=120)
+        self.entry_serv.place(x=90, y=165)
+        self.entry_pay.place(x=90, y=210)
         # Entry Agendamento
         self.list_agend.place(x=15, y=75)
 
