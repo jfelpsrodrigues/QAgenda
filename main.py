@@ -1,6 +1,7 @@
 from tkinter import *
 import tkinter
 import csv
+import os
 
 # Collors ---------------------------
 back = '#f6ffec'
@@ -20,6 +21,36 @@ font_label = 'Roboto 12'
 font_button = 'Roboto 13'
 font_button_ext = 'Roboto 10'
 
+# Func -------------------------------------------
+def to_ascii(text):
+    ascii_values = [ord(character) for character in text] # tranformar todas as letra em num da tabela ascii
+    num_str = ''
+    for i in ascii_values:
+        num_str += str(i)
+    return int(num_str)
+
+def new_business_csv(name):
+    path = 'c/files/scheduling'
+    arq = path + '/' + name + '.csv'
+
+    if not os.path.exists(path):
+        os.makedirs(path)
+
+    if not os.path.exists(arq):
+        file = open(arq, 'w')
+    file.close()
+
+def business_exists(name_file, id):
+    with open(name_file, 'r', encoding='utf-8') as arq:
+            lojas_csv = csv.reader(arq, delimiter=',')
+            for linha in lojas_csv:
+                if str(id) == linha[1]:
+                    print("já esta aq pow")
+                    return False
+    
+    return True
+
+# Cadastro ------------------------------------------------------
 class Registration(Tk):
     def __init__(self, geometry, width=False, height=False, bg=back):
         super().__init__()
@@ -29,34 +60,36 @@ class Registration(Tk):
         self.config(bg=bg)
         self.resizable(width=width, height=height)
 
+        self.state = -1 # O valor de 0 será para o cliente e de 1 para o estabelecimento
+
 
         self.widgets_init_sub()
         self.ret_client()
 
     def widgets_sub(self):
-        # Frames
+        # Frames -------------------------------------
         self.frame_1 = Frame(self, width=300, height=35, background=back, relief='flat')
         self.frame_2 = Frame(self, width=320, height=321, background=back, relief='flat')
         self.frame_3 = Frame(self, width=320, height=321, background=back, relief='flat')
         self.frame_4 = Frame(self, width=710, height=50, background=back, relief='flat')
 
-        # Objects
+        # Objects --------------------------------------
         self.label_line_div =  Label(self, text="", font=(font_obj), height=135, bg=button_collor_b, fg=back, relief='flat')
         self.lab_line = Label(self.frame_1, text="", anchor=N, font=(font_obj), width=280, bg=obj_collor, fg=back, relief='flat')
 
         # Labels -----------------------------------
         self.lab_title = Label(self.frame_1, text="Cadastre-se no QAgenda! ", anchor=N, font=(font_title_b), bg=back, fg=collor_font, relief='flat')
-        # Cliente
+        # Cliente --------------------------------------
         self.lab_name = Label(self.frame_2, text="Nome:", font=(font_label), bg=back, fg=collor_font, relief="flat")
         self.lab_cpf = Label(self.frame_2, text="CPF:", font=(font_label), bg=back, fg=collor_font, relief="flat")
         self.lab_id = Label(self.frame_2, text="Idade:", font=(font_label), bg=back, fg=collor_font, relief="flat")
-        self.lab_set = Label(self.frame_2, text="Setor:", font=(font_label), bg=back, fg=collor_font, relief="flat")
+        self.lab_set = Label(self.frame_2, text="Bairro:", font=(font_label), bg=back, fg=collor_font, relief="flat")
         self.lab_pass = Label(self.frame_2, text="Senha:", font=(font_label), bg=back, fg=collor_font, relief="flat")
-        # Estabelecimento
+        # Estabelecimento ---------------------------
         self.lab_name_est = Label(self.frame_3, text="Nome:", font=(font_label), bg=back, fg=collor_font, relief="flat")
         self.lab_cnpj = Label(self.frame_3, text="CNPJ:", font=(font_label), bg=back, fg=collor_font, relief="flat")
         self.lab_ramo = Label(self.frame_3, text="Serviço:", font=(font_label), bg=back, fg=collor_font, relief="flat")
-        self.lab_set_est = Label(self.frame_3, text="Setor:", font=(font_label), bg=back, fg=collor_font, relief="flat")
+        self.lab_set_est = Label(self.frame_3, text="Bairro:", font=(font_label), bg=back, fg=collor_font, relief="flat")
         self.lab_pass_est = Label(self.frame_3, text="Senha:", font=(font_label), bg=back, fg=collor_font, relief="flat")
 
         # Entry --------------------------------
@@ -65,7 +98,7 @@ class Registration(Tk):
         self.entry_id = Entry(self.frame_2, width=23, bg=white, fg=black, font=(font_label), highlightthickness=1, relief='flat')
         self.entry_set = Entry(self.frame_2, width=23, bg=white, fg=black, font=(font_label), highlightthickness=1, relief='flat')
         self.entry_pass = Entry(self.frame_2, width=23, bg=white, fg=black, show="*", font=(font_label), highlightthickness=1, relief='flat')
-        # Entry Estabelecimento
+        # Entry Estabelecimento ------------------
         self.entry_name_est = Entry(self.frame_3, width=23, bg=white, fg=black, font=(font_label), highlightthickness=1, relief='flat')
         self.entry_cnpj = Entry(self.frame_3, width=23, bg=white, fg=black, font=(font_label), highlightthickness=1, relief='flat')
         self.entry_ramo = Entry(self.frame_3, width=23, bg=white, fg=black, font=(font_label), highlightthickness=1, relief='flat')
@@ -73,7 +106,7 @@ class Registration(Tk):
         self.entry_pass_est = Entry(self.frame_3, width=23, bg=white, fg=black, show="*", font=(font_label), highlightthickness=1, relief='flat')
 
         # Buttons ------------------------------
-        self.button_confirm = Button(self.frame_4, text="Confirmar",width=10, height=1, relief='flat', font=(font_button), highlightthickness=1, bg=button_collor, fg=back)
+        self.button_confirm = Button(self.frame_4, text="Confirmar", command=self.write_register, width=10, height=1, relief='flat', font=(font_button), highlightthickness=1, bg=button_collor, fg=back)
         self.button_client = Button(self.frame_2, text="Cliente", command=self.ret_client, width=10, height=1, relief='flat', font=(font_button), highlightthickness=1, bg=button_collor_b, fg=back)
         self.button_est = Button(self.frame_3, text="Loja", command=self.ret_estabelecimento, width=10, height=1, relief='flat', font=(font_button), highlightthickness=1, bg=button_collor_b, fg=back)
         self.button_ret = Button(self.frame_4, text="Retornar", command=self.ret_login, width=10, anchor=N, font=(font_button_ext), highlightthickness=-1, bg=back, fg=collor_font, relief='flat')
@@ -139,6 +172,8 @@ class Registration(Tk):
         self.entry_ramo.config(state='disabled')
         self.entry_set_est.config(state='disabled')
         self.entry_pass_est.config(state='disabled')
+        
+        self.state = 0
 
     def ret_estabelecimento(self):
         self.entry_name_est.config(state='normal')
@@ -156,12 +191,35 @@ class Registration(Tk):
         self.entry_set.config(state='disabled')
         self.entry_pass.config(state='disabled')
 
+        self.state = 1
+
+    def write_register(self):
+        if self.state == 0: # Cliente
+            name = str(self.entry_name.get())
+            cpf = int(self.entry_cpf.get())
+            age = int(self.entry_id.get())
+            address = str(self.entry_set.get())
+            password = to_ascii(str(self.entry_pass.get()))
+
+            if(business_exists(name_file='c/files/clientes.csv', id=cpf)): # Verifica se já exite o cadastro
+                print(name + str(cpf) + str(age) + address + str(password))
+        elif self.state == 1: # Estabelecimento 
+            name = str(self.entry_name_est.get())
+            cnpj = int(self.entry_cnpj.get())
+            business = str(self.entry_ramo.get())
+            address = str(self.entry_set_est.get())
+            password = to_ascii(str(self.entry_pass_est.get()))
+
+            if(business_exists(name_file='c/files/estabelecimentos.csv', id=cnpj)): # Verifica se já exite o cadastro
+                new_business_csv(name=name.lower())
+                print(name + str(cnpj) + str(business) + address + str(password))
+
     def ret_login(self):
         self.destroy()
         login = Login("350x350")
         login.mainloop()
 
-
+# Login ------------------------------------------------------
 class Login(Tk):
     def __init__(self, geometry, width=False, height=False, bg=back):
         super().__init__()
@@ -241,7 +299,7 @@ class Login(Tk):
         subs = Registration("750x500")
         subs.mainloop()
 
-# ----------- Main ----------------
+# Main ----------------------------------------------------------------
 login = Login("350x350")
 
 login.mainloop()
