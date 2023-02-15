@@ -131,7 +131,16 @@ void CadastroCliente(List *t, char *nome, char *bairro, int senha, long int cpf,
     addFim(t, a);
 }
 
-void RealizarAgendamento();
+void RealizarAgendamento(char *name_file, int dia, int horario, long int cpf, char *name){
+    List *l = LeListaAgenda(name_file);
+    Cad a;
+    a.dia = dia;
+    a.horario = horario;
+    a.cpf_cnpj = cpf;
+    strcpy(a.nome, name);
+    EscreveListaAgenda(l, name_file);
+    destruirLista(l);
+}
 
 void OrdenacaoCliente() {
 

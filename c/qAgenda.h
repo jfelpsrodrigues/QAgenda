@@ -45,14 +45,24 @@ void CadastroLoja(List *t, char *name, char *bairro, char *ramo, long int cnpj, 
 /// @param cpf O cpf do cliente
 /// @param idade A idade do cliente
 void CadastroCliente(List *t, char *nome, char *bairro, int senha, long int cpf, int idade);
-void RealizarAgendamento();
+
+/// @brief Realiza o cadastro do agendamento no banco de dados
+/// @param name_file  Nome do arquivo do estabelecimento a ser aberto
+/// @param dia Dia do agendamento
+/// @param horario Hora do agendamento
+/// @param cpf CPF do cliente
+/// @param name Nome do cliente
+void RealizarAgendamento(char *name_file, int dia, int horario, long int cpf, char *name);
 
 /// @brief Ordenar os clientes por ordem alfabetica
 void OrdenacaoCliente();
 
 /// @brief Ordenar as lojas por ordem alfabetica
 void OrdenacaoLoja();
-void OrdenacaoAgendamento();
+
+/// @brief Ordena o aquivo do agendamento
+/// @param fileName Nome do arquivo do agendamento
+void OrdenacaoAgendamento(char *fileName);
 
 /// @brief Remover o Agendamento
 /// @param name_file O nome do arquivo
