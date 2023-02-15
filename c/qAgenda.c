@@ -132,29 +132,23 @@ void inserir_ordenado(List *l, Cad dado) {  //Insere dados na lista ordenadament
     }
 }
 
-void OrdenacaoAgendamento(char string[]) {
+void OrdenacaoAgendamento(char *fileName) {
 
-    char fileName[strlen(string)+11];   //tamanho da string + tamanho de "files/", ".csv" + 1 do caractere final de string
-    FILE *arq;
+    FILE *arq = fopen(fileName, "r+");
     Cad Agendamento;                    //Variavel de dados para registro
     No *aux = criarNo();                //No auxiliar para manipulacao da posicao na lista
     List *l = criarListaVazia();        //Lista principal
 
-    sprintf(fileName, "files/%s.csv", string);  //Variavel fileName composta com a string + inicio e fim adicionais
-    arq = fopen(fileName, "r+");                //Abertura do arquivo de Agendamento
-
     if(arq == NULL) exit(1);                    //Finaliza caso o arquivo nao possa ser aberto
 
-    fgets(Agendamento.nome, 128, arq);
-    while(fscanf(arq, "%d, %d, %[^,], %[^,], %[^\n]", &Agendamento.dia, &Agendamento.horario, Agendamento.nome, Agendamento.bairro, Agendamento.ramo) != EOF){
+    while(fscanf(arq, "%d,%d,%ld,%[^\n]", &Agendamento.dia, &Agendamento.horario, &Agendamento.cpf_cnpj, Agendamento.nome) != EOF){
         inserir_ordenado(l, Agendamento);       //Insere os dados do arquivo na lista
     }
     aux = l->inicio;                            //No auxiliar recebe o inicio da lista
 
     rewind(arq);                                //Retorna ao inicio do arquivo
-    fprintf(arq, "Dia, Horario, Nome, Loja, Servico\n"); //Registra os parametros base previamente no arquivo
     while(aux) {
-        fprintf(arq, "%02d, %04d, %s, %s, %s\n", aux->dados.dia, aux->dados.horario, aux->dados.nome, aux->dados.bairro, aux->dados.ramo);
+        fprintf(arq, "%02d, %04d, %ld, %s\n", aux->dados.dia, aux->dados.horario, aux->dados.cpf_cnpj, aux->dados.nome);
         aux = aux->prox;                        //Avanca a posicao da lista
     }
 
