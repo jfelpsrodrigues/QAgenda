@@ -143,20 +143,28 @@ Cad retornarValorInicial(List *l){
     return l->inicio->dados;
 }
 
-void removerCelula(List *l, int chave){
-    No *antes, *depois, *ptr;
-    ptr = l->inicio;
-    while(ptr->dados.cpf_cnpj != chave){ // Procura a celula
-        antes = ptr;
-        ptr = ptr->prox;
-        depois = ptr->prox;
-        if(ptr == NULL){ // Se ela não tiver na lista, nada acontece
-            return;
+void removerCelula(List *l, long int chave){
+    No *aux, *ptr = NULL;
+    if(l->inicio){
+        if(l->inicio->dados.cpf_cnpj == chave){
+            ptr = l->inicio;
+            l->inicio = ptr->prox;
+            free(ptr);
+            l->tam--;
+        }else{
+            aux = l->inicio;
+            while (aux->prox && aux->prox->dados.cpf_cnpj != chave)
+            {
+                aux = aux->prox;
+            }
+            if(aux->prox){
+                ptr = aux->prox;
+                aux->prox = ptr->prox;
+                free(ptr);
+                l->tam--;
+            }
         }
     }
-    antes->prox = depois; // Retira ela da lista
-    ptr = NULL; // Apaga ela
-    free(ptr);
 }
 
 void removerInicio(List *l){

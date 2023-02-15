@@ -53,7 +53,7 @@ Cad retornarValorInicial(List *l);
 /// @brief Remove um nó especifico da lista
 /// @param l Lista
 /// @param chave CPF/CNPJ do nó a ser removido
-void removerCelula(List *l, int chave); 
+void removerCelula(List *l, long int chave); 
 
 /// @brief Remove o primeiro nó da lista
 /// @param l Lista

@@ -42,16 +42,17 @@ void Menu(void){
                 destruirLista(l);
                 break;
             case 2:printf("[2] - Realizar Agendamento\n");  
-                // dados da chamada da função aqui 
+                RemoverCliente(2);
                 break;
-            case 3:printf("[3] - Mostrar Agendamento\n"); 
-                // dados da chamada da função aqui 
+            case 3:
+                printf("[3] - Mostrar Agendamento\n"); 
+                RemoverLoja(4);
                 break;
             case 4:printf("[4] - Mostrar Lojas Cadastradas\n");  
-                // dados da chamada da função aqui 
+                OrdenacaoLoja();
                 break;
             case 5:printf("[5] - Mostrar lojas ordenadas\n");  
-                // dados da chamada da função aqui 
+                OrdenacaoCliente();
                 break;
             case 6:printf("[6] - Mostrar Clientes Ordenados\n");  
                 // dados da chamada da função aqui 

@@ -46,6 +46,20 @@ List *LeListaClientes(){
     return l;
 }
 
+List *LeListaAgenda(char *name_file){
+    Cad estabelecimento;
+    List *l = criarListaVazia();
+    FILE *file = fopen(name_file, "r+");
+    if(file == NULL) exit(1);
+
+    while(fscanf(file, "%d,%d,%ld,%[^,]\n", &estabelecimento.dia, &estabelecimento.horario, &estabelecimento.cpf_cnpj, estabelecimento.nome) != EOF){
+        addFim(l, estabelecimento);
+    }
+    
+    fclose(file);
+    return l;
+}
+
 void EscreveListaClientes(List *l){
     Cad a;
     int i, tam;
@@ -71,6 +85,21 @@ void EscreveListaLojas(List *l){
     for(i=0; i<tam; i++){
         a = retornarValorInicial(l);
         fprintf(arq, "%s,%ld,%s,%s,%d\n", a.nome, a.cpf_cnpj, a.ramo, a.bairro, a.senha);
+        removerInicio(l);
+    }
+    fclose(arq);
+}
+
+void EscreveListaAgenda(List *l, char *name_file){
+    Cad a;
+    int i, tam;
+    FILE *arq = fopen(name_file, "w");
+    if(arq == NULL) exit(1);
+    
+    tam = tamanhoLista(l);
+    for(i=0; i<tam; i++){
+        a = retornarValorInicial(l);
+        fprintf(arq, "%d,%d,%ld,%s\n", a.dia, a.horario, a.cpf_cnpj, a.nome);
         removerInicio(l);
     }
     fclose(arq);
@@ -239,8 +268,26 @@ void OrdenacaoLoja() {
 
 void OrdenacaoAgendamento();
 
-void RemoverAgendamento();
+void RemoverAgendamento(char *name_file, long int cpf){
+    List *l = LeListaAgenda(name_file); // Tranformo o aquivo em lista
+    removerCelula(l, cpf); // Removo a celula da lista
+    EscreveListaAgenda(l, name_file); // Escrevo a lista de volta no arquivo
+    destruirLista(l); // Destruo a Lista
+}
 
-void RemoverLoja();
+void RemoverLoja(long int cnpj){
+    printf("Entrei\n");
+    List *l = LeListaLojas(); // Tranformo o aquivo em lista
+    printLista(l);
+    removerCelula(l, cnpj);// Removo a celula da lista
+    EscreveListaLojas(l); // Escrevo a lista de volta no arquivo
+    destruirLista(l); // Destruo a Lista
+}
 
-void RemoverCliente();
+void RemoverCliente(long int cpf){
+    List *l = LeListaClientes(); // Tranformo o aquivo em lista
+    removerCelula(l, cpf); // Removo a celula da lista
+    printLista(l);
+    EscreveListaClientes(l); // Escrevo a lista de volta no arquivo
+    destruirLista(l); // Destruo a Lista
+}
