@@ -166,7 +166,7 @@ void OrdenacaoCliente() {
     }
 
     memset(temp, 0, sizeof(char));      //Limpar string
-    for(j=1; j<n_linhas-1; j++) {       //Bubble sort para ordenar matrizes
+    for(j=0; j<n_linhas-1; j++) {       //Bubble sort para ordenar matrizes
         for(i=j+1; i<n_linhas; i++) {
             if(strcmp(ord_registro[j], ord_registro[i]) > 0) {
                 strcpy(temp, ord_registro[j]);           //Matriz secundaria com nome
@@ -234,7 +234,7 @@ void OrdenacaoLoja() {
     }
 
     memset(temp, 0, sizeof(char));      //Limpar string
-    for(j=1; j<n_linhas-1; j++) {       //Bubble sort para ordenar matrizes
+    for(j=0; j<n_linhas-1; j++) {       //Bubble sort para ordenar matrizes
         for(i=j+1; i<n_linhas; i++) {
             if(strcmp(ord_registro[j], ord_registro[i]) > 0) {
                 strcpy(temp, ord_registro[j]);                  //Matriz secundaria 
