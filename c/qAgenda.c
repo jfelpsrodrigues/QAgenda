@@ -119,12 +119,12 @@ void OrdenacaoLoja() {
         ord_registro[i] = (char*) calloc(100, sizeof(char));
     }
     //--------------------------------------------------
-    rewind(CL);                         //Retorna ao inicio do arquivo
+    rewind(CL);                             //Retorna ao inicio do arquivo
     while(fgets(buffer, 100, CL)) {
-        strcpy(registro[count], buffer);
+        strcpy(registro[count], buffer);    //Matriz principal recebe a linha completa
         count++;
-        temp = strtok(buffer, ",");
-        strcpy(ord_registro[count2], temp);
+        temp = strtok(buffer, ",");         //Variavel recebe o parametro
+        strcpy(ord_registro[count2], temp); //Matriz secundaria recebe o primeiro parametro
         count2++;
     }
 
