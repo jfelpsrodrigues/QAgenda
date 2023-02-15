@@ -5,20 +5,6 @@
 #include "listas.h"
 #include "listas.c"
 
-// struct cadastro{
-//     // Geral
-//     char nome[128];
-//     char bairro[128];
-//     int senha;
-//     // Cliente
-//     long int cpf_cnpj;
-//     int idade;
-//     // Estabelecimento
-//     char ramo[128];
-//     int horario;
-//     int dia;
-// };
-
 List *LeListaLojas(){
     Cad estabelecimento;
     List *l = criarListaVazia();
@@ -127,7 +113,6 @@ void CadastroCliente(List *t, char *nome, char *bairro, int senha, long int cpf,
     a.senha = senha;
     a.cpf_cnpj = cpf;
     a.idade = idade;
-    printf("%s\n", bairro);
     addFim(t, a);
 }
 
@@ -344,7 +329,6 @@ void RemoverAgendamento(char *name_file, long int cpf){
 }
 
 void RemoverLoja(long int cnpj){
-    printf("Entrei\n");
     List *l = LeListaLojas(); // Tranformo o aquivo em lista
     printLista(l);
     removerCelula(l, cnpj);// Removo a celula da lista
