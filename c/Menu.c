@@ -28,9 +28,10 @@ void Menu(void){
         List *l = criarListaVazia();
         int opcao;
         switch(num){
-            case 0: printf("[0] - Cadastrar de Loja\n");
+            case 0: 
+                printf("[0] - Cadastrar de Loja\n");
                 l = LeListaLojas();
-                CadastroLoja(l, "gls", "SaoCarlos", "Lavanderia", 4561356498, 35);
+                CadastroLoja(l, "gls", "SaoCarlos", "Salão", 4561356498, 35);
                 EscreveListaLojas(l);
                 destruirLista(l);
                 break;

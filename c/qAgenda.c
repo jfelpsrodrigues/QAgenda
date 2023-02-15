@@ -48,32 +48,43 @@ List *LeListaClientes(){
 
 void EscreveListaClientes(List *l){
     Cad a;
-    FILE *arq = fopen("files/clientes.csv", "a+");
+    int i, tam;
+    FILE *arq = fopen("files/clientes.csv", "w");
     if(arq == NULL) exit(1);
 
-    a = retornarValorInicial(l);
-    fprintf(arq, "%s,%ld,%d,%s,%d\n", a.nome, a.cpf_cnpj, a.idade, a.bairro, a.senha);
+    tam = tamanhoLista(l);
+    for(i = 0; i < tam; i++){
+        a = retornarValorInicial(l);
+        fprintf(arq, "%s,%ld,%d,%s,%d\n", a.nome, a.cpf_cnpj, a.idade, a.bairro, a.senha);
+        removerInicio(l);
+    }
     fclose(arq);
 }
 
 void EscreveListaLojas(List *l){
     Cad a;
-    FILE *arq = fopen("files/estabelecimentos.csv", "a+");
+    int i, tam;
+    FILE *arq = fopen("files/estabelecimentos.csv", "w");
     if(arq == NULL) exit(1);
-
-    a = retornarValorInicial(l);
-    fprintf(arq, "%s,%ld,%s,%s,%d\n", a.nome, a.cpf_cnpj, a.ramo, a.bairro, a.senha);
+    
+    tam = tamanhoLista(l);
+    for(i=0; i<tam; i++){
+        a = retornarValorInicial(l);
+        fprintf(arq, "%s,%ld,%s,%s,%d\n", a.nome, a.cpf_cnpj, a.ramo, a.bairro, a.senha);
+        removerInicio(l);
+    }
     fclose(arq);
 }
 
 void CadastroLoja(List *t, char *name, char *bairro, char *ramo, long int cnpj, int senha){
     Cad a;
+    printf("tests\n");
 
     strcpy(a.nome, name);
     strcpy(a.bairro, bairro);
     a.senha = senha;
     a.cpf_cnpj = cnpj;
-    strcmp(a.ramo, ramo);
+    strcpy(a.ramo, ramo);
     
     addFim(t, a);
 }
@@ -86,7 +97,7 @@ void CadastroCliente(List *t, char *nome, char *bairro, int senha, long int cpf,
     a.senha = senha;
     a.cpf_cnpj = cpf;
     a.idade = idade;
-    
+    printf("%s\n", bairro);
     addFim(t, a);
 }
 
