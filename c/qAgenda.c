@@ -103,7 +103,71 @@ void CadastroCliente(List *t, char *nome, char *bairro, int senha, long int cpf,
 
 void RealizarAgendamento();
 
-void OrdenacaoCliente();
+void OrdenacaoCliente() {
+
+    FILE* CC = fopen("files/clientes.csv", "r+");
+    char buffer[100];
+    char *temp;             //String para ordernamento
+    char **registro;        //Matriz completa a ordenar
+    char **ord_registro;    //Matriz do primeiro parametro(nome)
+    int n_linhas=0, count=0, count2=0, i, j;  //Variaveis de contagem
+
+    if(CC == NULL) exit(1);
+
+    //Contagem de linhas do arquivo para alocar dinamicamente
+    while(fgets(buffer, 100, CC)) n_linhas++;
+
+    //alocacao dinamica da matriz de linhas e colunas
+    registro = (char**) calloc(n_linhas, sizeof(char*));
+    for(i=0; i<n_linhas; i++) {
+        registro[i] = (char*) calloc(100, sizeof(char));
+    }
+
+    ord_registro = (char**) calloc(n_linhas, sizeof(char*));
+    for(i=0; i<n_linhas; i++) {
+        ord_registro[i] = (char*) calloc(100, sizeof(char));
+    }
+    //--------------------------------------------------
+    rewind(CC);                         //Retorna ao inicio do arquivo
+    while(fgets(buffer, 100, CC)) {
+        strcpy(registro[count++], buffer);
+        temp = strtok(buffer, ",");
+        strcpy(ord_registro[count2++], temp);
+    }
+
+    memset(temp, 0, sizeof(char));      //Limpar string
+    for(j=1; j<n_linhas-1; j++) {       //Bubble sort para ordenar matrizes
+        for(i=j+1; i<n_linhas; i++) {
+            if(strcmp(ord_registro[j], ord_registro[i]) > 0) {
+                strcpy(temp, ord_registro[j]);           //Matriz secundaria com nome
+                strcpy(ord_registro[j], ord_registro[i]);
+                strcpy(ord_registro[i], temp);
+
+                memset(temp, 0, sizeof(char));
+                strcpy(temp, registro[j]);              //Matriz principal com todos os dados
+                strcpy(registro[j], registro[i]);
+                strcpy(registro[i], temp);
+            }
+        }
+    }
+
+    rewind(CC);                         //Retorna ao inicio do arquivo
+    for(i=0; i<n_linhas; i++) {         //Escrita no arquivo 
+        fprintf(CC, "%s", registro[i]);
+    }
+
+    //--------------------------------------------------
+    fclose(CC);
+
+    //liberar matrizes
+    for(i=0; i<n_linhas; i++) {
+        free(registro[i]);
+        free(ord_registro[i]);
+    }
+    free(registro);
+    free(ord_registro);
+
+}
 
 void OrdenacaoLoja() {
 
