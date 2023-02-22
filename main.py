@@ -163,7 +163,7 @@ class Registration(Tk):
         super().__init__()
 
         self.title("QAgenda")
-        self.geometry("750x500")
+        self.geometry("780x500")
         self.config(bg=bg)
         self.resizable(width=width, height=height)
 
@@ -333,7 +333,7 @@ class HomeClient(Tk):
         super().__init__()
 
         self.title("QAgenda")
-        self.geometry("750x500")
+        self.geometry("780x500")
         self.config(bg=bg)
         self.resizable(width=width, height=height)
 
@@ -511,7 +511,7 @@ class HomeStore(Tk):
         super().__init__()
 
         self.title("QAgenda")
-        self.geometry("750x500")
+        self.geometry("780x500")
         self.config(bg=bg)
         self.resizable(width=width, height=height)
 
