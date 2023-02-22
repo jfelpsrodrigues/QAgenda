@@ -87,7 +87,7 @@ class Login(Tk):
         # Buttons
         self.button_confirm = Button(self.frame_2, text="Entrar", command=self.search_login, width=10, height=1, relief='flat', font=(font_button), highlightthickness=1, bg=button_collor, fg=back)
         self.button_inscr = Button(self.frame_2, text="Cadastrar", command=self.new_window_sub, width=10, anchor=N, font=(font_button_ext), highlightthickness=-1, bg=back, fg=collor_font, relief='flat')
-        self.button_lost = Button(self.frame_2, text="Esqueceu a Senha?", width=15, anchor=N, font=(font_button_ext), highlightthickness=-1, bg=back, fg=collor_font, relief='flat')
+        self.button_lost = Button(self.frame_2, text="Esqueceu a Senha?", command=self.new_window_recovery, width=15, anchor=N, font=(font_button_ext), highlightthickness=-1, bg=back, fg=collor_font, relief='flat')
         
 
     def widgets_init_sigin(self):
@@ -142,15 +142,112 @@ class Login(Tk):
         except:
             messagebox.showerror("Erro", "Verifique os dados digitados\n")
 
+    # Chama a tela do cliente
     def new_window_home_client(self, id, passnumber):
         self.destroy()
         home = HomeClient(id, passnumber)
         home.mainloop()
 
+    # Chama a tela do estabelecimento
     def new_window_home_store(self, id, passnumber):
         self.destroy()
         home = HomeStore(id, passnumber)
         home.mainloop()
+
+    # Chama a tela da recuperação de senha
+    def new_window_recovery(self):
+        self.destroy()
+        window = Recovery("350x350")
+        window.mainloop()
+
+    # Chama a tela do cadastro
+    def new_window_sub(self):
+        self.destroy()
+        subs = Registration()
+        subs.mainloop()
+
+# Recuperação ------------------------------------------------------
+class Recovery(Tk):
+    def __init__(self, geometry, width=False, height=False, bg=back):
+        super().__init__()
+
+        self.title("QAgenda")
+        self.geometry(geometry)
+        self.config(bg=bg)
+        self.resizable(width=width, height=height)
+
+        self.widgets_init_sigin()
+
+    def widgets_sigin(self):
+        # Frames
+        self.frame_1 = Frame(self, width=350, height=50, background=back, relief='flat')
+        self.frame_2 = Frame(self, width=350, height=300, background=back, relief='flat')
+
+        # Labels
+        self.lab_login = Label(self.frame_1, text="Recuperar Senha", anchor=NE, font=(font_title), bg=back, fg=collor_font, relief='flat')
+        self.lab_line = Label(self.frame_1, text="", anchor=NW, font=(font_obj), width=300, bg=obj_collor, fg=back, relief='flat')
+        self.lab_name = Label(self.frame_2, text="Nome:", font=(font_label), bg=back, fg=collor_font, relief="flat")
+        self.lab_pass = Label(self.frame_2, text="CPF/CNPJ:", font=(font_label), bg=back, fg=collor_font, relief="flat")
+        
+        # Entry
+        self.entry_name = Entry(self.frame_2, width=23, bg=white, fg=black, font=(font_label), highlightthickness=1, relief='flat')
+        self.entry_pass = Entry(self.frame_2, width=23, bg=white, fg=black, font=(font_label), highlightthickness=1, relief='flat')
+        
+        # Buttons
+        self.button_confirm = Button(self.frame_2, text="Cadastrar", command=self.new_window_sub, width=10, height=1, relief='flat', font=font_button_ext, highlightthickness=-1, bg=back, fg=black)
+        self.button_inscr = Button(self.frame_2, text="Login", command=self.ret_login, width=10, anchor=N, font=font_button_ext, highlightthickness=1, bg=button_collor_b, fg=back, relief='flat')
+        self.button_lost = Button(self.frame_2, text="Lembrar senha", command=self.recovery_login, width=15, anchor=N, font=font_button_ext, highlightthickness=1, bg=button_collor, fg=back, relief='flat')
+        
+
+    def widgets_init_sigin(self):
+        self.widgets_sigin()
+
+        # Frames Init
+        self.frame_1.grid(row=0, column=0, pady=2, sticky=NSEW)
+        self.frame_2.grid(row=1, column=0, pady=2, sticky=NSEW)
+
+        # Labels Init
+        self.lab_login.place(x=15, y=5)
+        self.lab_line.place(x=15, y=40)
+        self.lab_name.place(x=15, y=15)
+        self.lab_pass.place(x=15, y=60)
+
+        # Entry Init
+        self.entry_name.place(x=105, y=15)
+        self.entry_pass.place(x=105, y=60) # Para o CPF
+
+        # Button Init
+        self.button_confirm.place(x=115, y=200) # Para tela de cadastro
+        self.button_inscr.place(x=200, y=150) # Para tela de login
+        self.button_lost.place(x=30, y=150) # Para lembrar a senha
+
+    def recovery_login(self):
+        ver = False # Variavel de verificação: False - Não esta na lista, True - Esta na lista
+        try:
+            # Pega as informações digitadas na tela
+            name = str(self.entry_name.get())
+            ident = int(self.entry_pass.get())
+
+            # Tranformar o arquivo em lista
+            client_list = AqrList("files/clientes.csv")
+
+            # Procura o login na lista
+            for item in client_list:
+                if name == str(item[0]) and ident == int(item[1]):
+                    senha = "Sua senha é " + str(item[4])
+                    messagebox.showinfo("Sucesso", senha)
+                    ver = True
+            
+            if not ver:
+                messagebox.showerror("Erro", "Seu cadastro não foi encontrado!\nVerifique os dados ou faça um novo cadastro.\n")
+        except:
+            messagebox.showerror("Erro", "Verifique os dados e tente novamente\n")
+            
+
+    def ret_login(self):
+        self.destroy()
+        login = Login("350x350")
+        login.mainloop()
 
     def new_window_sub(self):
         self.destroy()
