@@ -25,9 +25,10 @@
 
 ## ✅ Pré-requisitos
 Antes de começar, você vai precisar ter instalado em sua máquina as seguintes ferramentas:   
-[Python](https://www.python.org/), e recomendavel um compilador [C](https://www.w3schools.com/c/).   
-O sistema no qual o projeto foi desenvolvido: 🐧 kernel linux   
-Além disto é bom ter um editor para trabalhar com o código como [VSCode](https://code.visualstudio.com/)
+- [Python](https://www.python.org/), e recomendavel um compilador [C](https://www.w3schools.com/c/).
+- [Tkinter](https://docs.python.org/3/library/tkinter.html) Uma biblioteca que fornece uma interface gráfica padrão do Python e faz parte do kit de ferramentas Tcl/Tk GUI.   
+- O sistema no qual o projeto foi desenvolvido: 🐧 kernel linux   
+- Além disto é bom ter um editor para trabalhar com o código como [VSCode](https://code.visualstudio.com/)
 
 ## 🎲 Rodando a aplicação
 ```bash
