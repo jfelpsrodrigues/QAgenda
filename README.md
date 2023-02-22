@@ -20,7 +20,7 @@
 - [x] Cadastro de serviços
 - [x] Agendamento
 - [x] Integração Python e C
-- [ ] Tela de recuperação de senha
+- [x] Tela de recuperação de senha
 - [ ] Integração SQL
 
 ## ✅ Pré-requisitos
