@@ -15,18 +15,44 @@
 
 ## :construction_worker: Features
 
-- [ ] Cadastro de microempresas
-- [ ] Cadastro de cliente
-- [ ] Cadastro de serviços
-- [ ] Agendamento
+- [x] Cadastro de microempresas
+- [x] Cadastro de cliente
+- [x] Cadastro de serviços
+- [x] Agendamento
+- [x] Integração Python e C
+- [ ] Tela de recuperação de senha
+- [ ] Integração SQL
+
+## ✅ Pré-requisitos
+Antes de começar, você vai precisar ter instalado em sua máquina as seguintes ferramentas:   
+[Python](https://www.python.org/), e recomendavel um compilador [C](https://www.w3schools.com/c/).   
+O sistema no qual o projeto foi desenvolvido: 🐧 kernel linux   
+Além disto é bom ter um editor para trabalhar com o código como [VSCode](https://code.visualstudio.com/)
+
+## 🎲 Rodando a aplicação
+```bash
+# Clone este repositório
+$ git clone "https://github.com/jfkarurosu/QAgenda"
+
+# Acesse a pasta do projeto no terminal/cmd
+$ cd QAgenda
+
+# Execute o interpretador python
+$ python main.py
+
+# ou se estiver em um linux
+$ python3 main.py
+
+# A aplicação iniciara na tela de login. Faça seu cadastro :)
+```
 
 ## 📝 Licença
 Este projeto esta sobe a licença MIT.
 
 Projeto feito com ❤️ por:  
-:stuck_out_tongue_winking_eye: [Arthur Benjamin]()  
+:stuck_out_tongue_winking_eye: [Arthur Benjamin](https://github.com/benjamimarthur)  
 🥰 [Jamilly Vitorya](https://www.linkedin.com/in/jamilly-barbosa/)  
 :sunglasses: [João Felipe Rodrigues](https://www.linkedin.com/in/jfcarlos/)   
-:four_leaf_clover:  [João Rios]()  
-🕶️ [Kevin Brunno]()  
+:four_leaf_clover:  [João Rios](https://github.com/JR-Bastos)  
+🕶️ [Kevin Brunno](https://github.com/KevinBrunno)  
 Entre em contato conosco! 👋🏽
