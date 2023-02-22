@@ -23,6 +23,34 @@
 - [x] Tela de recuperação de senha
 - [ ] Integração SQL
 
+## 📸 Screen Shots
+<table>
+  <tr align="center">
+    <td>
+      <h3> Tela de Login </h3>
+      <img src="./img/prints/login.png" alt="Tela de Login">
+    </td>
+    <td>
+      <h3> Tela de Recuperação de Senha </h3>
+      <img src="./img/prints/recovey.png" alt="Tela de Recuperação">
+    </td>
+  </tr>
+  <tr align="center">
+    <td>
+      <h3> Tela Home do Cliente </h3>
+      <img src="./img/prints/client.png" alt="Tela do cliente">
+    </td>
+    <td>
+      <h3> Tela Home da Loja </h3>
+      <img src="./img/prints/loja.png" alt="Tela da loja">
+    </td>
+  </tr>
+</table>
+<div align="center">
+  <h3> Tela de Cadastro </h3>
+    <img src="./img/prints/captura.gif" alt="Tela de Cadastro">
+</div>
+
 ## ✅ Pré-requisitos
 Antes de começar, você vai precisar ter instalado em sua máquina as seguintes ferramentas:   
 - [Python](https://www.python.org/), e recomendavel um compilador [C](https://www.w3schools.com/c/).
