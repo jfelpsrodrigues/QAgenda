@@ -59,19 +59,13 @@ void removerCelula(List *l, long int chave);
 /// @param l Lista
 void removerInicio(List *l); 
 
-/// @brief Remove o ultimo nó da lista
-/// @param l Lista
-void removerFim(List *l);
-
-/// @brief Concatena duas listas distintas
-/// @param a Lista 1
-/// @param b Lista 2
-/// @return Lista 1 concatenada
-List* concatenarListas(List *a, List *b);
-
 /// @brief Imprimi os itens da lista
 /// @param l Lista
 void printLista(List *l);
+
+/// @brief Imprimi os itens da lista
+/// @param l Lista
+void printListaAgenda(List *l);
 
 /// @brief Mostra o tamanho da lista
 /// @param l Lista

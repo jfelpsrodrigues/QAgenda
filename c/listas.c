@@ -1,8 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdbool.h>
-#include <ctype.h>
 #include "qAgenda.h"
 #include "listas.h"
 
@@ -181,48 +179,22 @@ void removerInicio(List *l){
     l->tam--;
 }
 
-void removerFim(List *l){
-    No *penultimo, *ptr = l->inicio;
-
-    if(ptr->prox == NULL){ // Verifica se só existe um nó na fila
-        ptr = NULL;
-        free(ptr);
-    }else{
-        while(ptr != l->fim){ // procura o ultimo e penultimo
-            penultimo = ptr;
-            ptr = ptr->prox;
-        }
-        penultimo->prox = NULL; // Faz o penultimo apontar para NULL
-        l->fim = penultimo;
-        free(ptr); // Libera o ultimo no
-    }
-}
-
-List* concatenarListas(List *a, List *b){
-    No *ptr, *aux;
-    aux = criarNo();
-    if(a->fim == b->fim){ // a ultima é igual a primeira
-        return a;
-    }
-    a->fim->prox = b->inicio; // associo o ultimo nó da a ao inicio da b
-    ptr = a->fim->prox;
-    while (ptr->prox != NULL){ // procuro o ultimo nó da lista
-        ptr = ptr->prox;
-    }
-    a->fim = ptr; // faço ele ser o final
-    a->tam = a->tam + b->tam; // somo os tamanhos
-    return a;
-}
-
-
 void printLista(List *l){
     No *aux;
     aux = l->inicio;
     while (aux != NULL){ // percorre a lista printando cada item
-        printf("%ld ", aux->dados.cpf_cnpj);
+        printf("CPF/CNPJ: %ld - Nome: %s\n", aux->dados.cpf_cnpj, aux->dados.nome);
         aux = aux->prox;
     }
-    printf("\n");
+}
+
+void printListaAgenda(List *l){
+    No *aux;
+    aux = l->inicio;
+    while (aux != NULL){ // percorre a lista printando cada item
+        printf("CPF/CNPJ: %ld - Dia: %d - Hora: %d\n", aux->dados.cpf_cnpj, aux->dados.dia, aux->dados.horario);
+        aux = aux->prox;
+    }
 }
 
 int tamanhoLista(List *l){
@@ -230,10 +202,5 @@ int tamanhoLista(List *l){
 }
 
 void destruirLista(List *l){
-    No *aux = l->inicio;
-    while(aux != NULL){
-        removerFim(l);
-        aux = aux->prox;
-    }
     free(l);
 }

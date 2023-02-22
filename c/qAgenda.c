@@ -3,7 +3,33 @@
 #include <string.h>
 #include "qAgenda.h"
 #include "listas.h"
-#include "listas.c"
+
+struct cadastro{
+    // Geral
+    char nome[128];
+    char bairro[128];
+    int senha;
+    // Cliente
+    long int cpf_cnpj;
+    int idade;
+    // Estabelecimento
+    char ramo[128];
+    int horario;
+    int dia;
+};
+
+struct no
+{
+    Cad dados;
+    struct no *prox;
+};
+
+struct lista
+{
+    No *inicio;
+    No *fim;
+    int tam;
+};
 
 List *LeListaLojas(){
     Cad estabelecimento;
@@ -33,13 +59,12 @@ List *LeListaClientes(){
     return l;
 }
 
-List *LeListaAgenda(char *name_file){
+List *LeListaAgenda(char *file_name){
     Cad estabelecimento;
     List *l = criarListaVazia();
-    FILE *file = fopen(name_file, "r+");
+    FILE *file = fopen(file_name, "r+");
     if(file == NULL) exit(1);
-
-    while(fscanf(file, "%d,%d,%ld,%[^,]\n", &estabelecimento.dia, &estabelecimento.horario, &estabelecimento.cpf_cnpj, estabelecimento.nome) != EOF){
+    while(fscanf(file, "%d, %d, %ld,%s\n", &estabelecimento.dia, &estabelecimento.horario, &estabelecimento.cpf_cnpj, estabelecimento.nome) != EOF){
         addFim(l, estabelecimento);
     }
     
@@ -77,10 +102,10 @@ void EscreveListaLojas(List *l){
     fclose(arq);
 }
 
-void EscreveListaAgenda(List *l, char *name_file){
+void EscreveListaAgenda(char *file_name, List *l){
     Cad a;
     int i, tam;
-    FILE *arq = fopen(name_file, "w");
+    FILE *arq = fopen(file_name, "w");
     if(arq == NULL) exit(1);
     
     tam = tamanhoLista(l);
@@ -92,9 +117,9 @@ void EscreveListaAgenda(List *l, char *name_file){
     fclose(arq);
 }
 
-void CadastroLoja(List *t, char *name, char *bairro, char *ramo, long int cnpj, int senha){
+void CadastroLoja(char *name, char *bairro, char *ramo, long int cnpj, int senha){
+    List *t = LeListaLojas();
     Cad a;
-    printf("tests\n");
 
     strcpy(a.nome, name);
     strcpy(a.bairro, bairro);
@@ -103,9 +128,12 @@ void CadastroLoja(List *t, char *name, char *bairro, char *ramo, long int cnpj, 
     strcpy(a.ramo, ramo);
     
     addFim(t, a);
+    EscreveListaLojas(t);
+    destruirLista(t);
 }
 
-void CadastroCliente(List *t, char *nome, char *bairro, int senha, long int cpf, int idade) {
+void CadastroCliente(char *nome, char *bairro, int senha, long int cpf, int idade) {
+    List *t = LeListaClientes();
     Cad a;
 
     strcpy(a.nome, nome);
@@ -114,16 +142,19 @@ void CadastroCliente(List *t, char *nome, char *bairro, int senha, long int cpf,
     a.cpf_cnpj = cpf;
     a.idade = idade;
     addFim(t, a);
+    EscreveListaClientes(t);
+    destruirLista(t);
 }
 
-void RealizarAgendamento(char *name_file, int dia, int horario, long int cpf, char *name){
-    List *l = LeListaAgenda(name_file);
+void RealizarAgendamento(char *file_name, int dia, int horario, long int cpf, char *name){
+    List *l = LeListaAgenda(file_name);
     Cad a;
     a.dia = dia;
     a.horario = horario;
     a.cpf_cnpj = cpf;
     strcpy(a.nome, name);
-    EscreveListaAgenda(l, name_file);
+    addFim(l, a);
+    EscreveListaAgenda(file_name, l);
     destruirLista(l);
 }
 
@@ -296,9 +327,8 @@ void inserir_ordenado(List *l, Cad dado) {  //Insere dados na lista ordenadament
     }
 }
 
-void OrdenacaoAgendamento(char *fileName) {
-
-    FILE *arq = fopen(fileName, "r+");
+void OrdenacaoAgendamento(char *file_name) {
+    FILE *arq = fopen(file_name, "r+");
     Cad Agendamento;                    //Variavel de dados para registro
     No *aux = criarNo();                //No auxiliar para manipulacao da posicao na lista
     List *l = criarListaVazia();        //Lista principal
@@ -318,19 +348,17 @@ void OrdenacaoAgendamento(char *fileName) {
 
     destruirLista(l);                           //Libera a lista
     fclose(arq);                                //Fechamento do arquivo para finalizacao
-
 }
 
-void RemoverAgendamento(char *name_file, long int cpf){
-    List *l = LeListaAgenda(name_file); // Tranformo o aquivo em lista
+void RemoverAgendamento(char *file_name, long int cpf){
+    List *l = LeListaAgenda(file_name); // Tranformo o aquivo em lista
     removerCelula(l, cpf); // Removo a celula da lista
-    EscreveListaAgenda(l, name_file); // Escrevo a lista de volta no arquivo
+    EscreveListaAgenda(file_name, l); // Escrevo a lista de volta no arquivo
     destruirLista(l); // Destruo a Lista
 }
 
 void RemoverLoja(long int cnpj){
     List *l = LeListaLojas(); // Tranformo o aquivo em lista
-    printLista(l);
     removerCelula(l, cnpj);// Removo a celula da lista
     EscreveListaLojas(l); // Escrevo a lista de volta no arquivo
     destruirLista(l); // Destruo a Lista
@@ -339,7 +367,6 @@ void RemoverLoja(long int cnpj){
 void RemoverCliente(long int cpf){
     List *l = LeListaClientes(); // Tranformo o aquivo em lista
     removerCelula(l, cpf); // Removo a celula da lista
-    printLista(l);
     EscreveListaClientes(l); // Escrevo a lista de volta no arquivo
     destruirLista(l); // Destruo a Lista
 }

@@ -1,7 +1,19 @@
-#ifndef QAGENDA_H
-#define QAGENDA_H
+%module qAgenda
 
+%include cstring.i
+
+%{
+#define SWIG_FILE_WITH_INIT
+#include "qAgenda.h"
 #include "listas.h"
+%}
+
+%cstring_mutable(char *file_name);
+%cstring_mutable(char *name);
+%cstring_mutable(char *nome);
+%cstring_mutable(char *bairro);
+%cstring_mutable(char *ramo);
+%include "qAgenda.h"
 
 typedef struct no No;
 typedef struct cadastro Cad;
@@ -78,5 +90,3 @@ void RemoverLoja(long int cnpj);
 /// @brief Remover o cliente da lista
 /// @param cpf Cpf do cliente
 void RemoverCliente(long int cpf);
-
-#endif

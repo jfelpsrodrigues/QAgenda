@@ -1,8 +1,9 @@
 from tkinter import *
-import tkinter
+from tkinter import messagebox
 from tkinter import ttk
 import csv
 import os
+from qAgenda import *
 
 # Collors ---------------------------
 back = '#f6ffec'
@@ -32,11 +33,8 @@ def to_ascii(text):
     return int(num_str)
 
 def new_business_csv(name):
-    path = 'c/files/scheduling'
+    path = 'files/scheduling'
     arq = path + '/' + name + '.csv'
-
-    if not os.path.exists(path):
-        os.makedirs(path)
 
     if not os.path.exists(arq):
         file = open(arq, 'w')
@@ -44,13 +42,20 @@ def new_business_csv(name):
 
 def business_exists(name_file, id):
     with open(name_file, 'r', encoding='utf-8') as arq:
-            lojas_csv = csv.reader(arq, delimiter=',')
-            for linha in lojas_csv:
-                if str(id) == linha[1]:
-                    print("já esta aq pow")
+            colunas = list(csv.reader(arq, delimiter=','))
+            for linha in colunas:
+                if(len(linha) == 0):
+                    break
+                elif id == int(linha[1]):
                     return False
     
     return True
+
+def AqrList(name_file):
+        with open(name_file, 'r', encoding='unicode_escape') as arq:
+            lojas_csv = csv.reader(arq, delimiter=',')
+            list_lojas = list(lojas_csv)
+            return list_lojas
 
 # Login ------------------------------------------------------
 class Login(Tk):
@@ -108,23 +113,35 @@ class Login(Tk):
         self.button_lost.place(x=172, y=200)
 
     def search_login(self):
-        id = str(self.entry_name.get())
-        passnumber = str(self.entry_pass.get())
-        # Busca nos estabelecimentos
-        with open("c/files/estabelecimentos.csv", 'r', encoding='utf-8') as arq:
-            lojas_csv = csv.reader(arq, delimiter=',')
-            for linha in lojas_csv:
-                if id == linha[1] and passnumber == linha[4]:
-                    self.new_window_home_store(id=id, passnumber=passnumber)
-                    break
-                
-        # Busca nos clientes
-        with open('c/files/clientes.csv', 'r', encoding='utf-8') as arq:
-            clientes_csv = csv.reader(arq, delimiter=',')
-            for linha in clientes_csv:
-                if id == linha[1] and passnumber == linha[4]:
-                    self.new_window_home_client(id=id, passnumber=passnumber)
-                    break
+        existe = 0
+        try:
+            id = int(self.entry_name.get())
+            passnumber = int(self.entry_pass.get())
+            # Busca nos estabelecimentos
+            with open("files/estabelecimentos.csv", 'r', encoding='unicode_escape') as arq:
+                lojas_csv = csv.reader(arq, delimiter=',')
+                list_lojas = list(lojas_csv)
+                for linha in list_lojas:
+                    if id == int(linha[1]) and passnumber == int(linha[4]):
+                        self.new_window_home_store(id=id, passnumber=passnumber)
+                        existe = 1
+                        break
+                    
+            # Busca nos clientes
+            with open("files/clientes.csv", 'r', encoding='unicode_escape') as arq:
+                clientes_csv = list(csv.reader(arq, delimiter=','))
+                for linha in clientes_csv:
+                    if id == int(linha[1]) and passnumber == int(linha[4]):
+                        self.new_window_home_client(id=id, passnumber=passnumber)
+                        existe = 1
+                        break
+            
+            if existe == 0:
+                messagebox.showerror("Erro", "Usuário não cadastrado\n")
+
+        except:
+            messagebox.showerror("Erro", "Verifique os dados digitados\n")
+
     def new_window_home_client(self, id, passnumber):
         self.destroy()
         home = HomeClient(id, passnumber)
@@ -284,24 +301,26 @@ class Registration(Tk):
 
     def write_register(self):
         if self.state == 0: # Cliente
-            name = str(self.entry_name.get())
+            name = str(self.entry_name.get()).lower()
             cpf = int(self.entry_cpf.get())
             age = int(self.entry_id.get())
             address = str(self.entry_set.get())
-            password = to_ascii(str(self.entry_pass.get()))
+            password = int(self.entry_pass.get())
 
-            if(business_exists(name_file='c/files/clientes.csv', id=cpf)): # Verifica se já exite o cadastro
-                print(name + str(cpf) + str(age) + address + str(password))
+            if(business_exists(name_file='files/clientes.csv', id=cpf)): # Verifica se já exite o cadastro
+                CadastroCliente(nome=name, bairro=address, senha=password, cpf=cpf, idade=age)
+                self.ret_login()
         elif self.state == 1: # Estabelecimento 
-            name = str(self.entry_name_est.get())
+            name = str(self.entry_name_est.get()).lower()
             cnpj = int(self.entry_cnpj.get())
             business = str(self.entry_ramo.get())
             address = str(self.entry_set_est.get())
-            password = to_ascii(str(self.entry_pass_est.get()))
+            password = int(self.entry_pass_est.get())
 
-            if(business_exists(name_file='c/files/estabelecimentos.csv', id=cnpj)): # Verifica se já exite o cadastro
+            if(business_exists(name_file='files/estabelecimentos.csv', id=cnpj)): # Verifica se já exite o cadastro
                 new_business_csv(name=name.lower())
-                print(name + str(cnpj) + str(business) + address + str(password))
+                CadastroLoja(name=name, bairro=address, ramo=business, cnpj=cnpj, senha=password)
+                self.ret_login()
 
     def ret_login(self):
         self.destroy()
@@ -322,6 +341,7 @@ class HomeClient(Tk):
         self.passnumber = passnumber
 
         self.widgets_init_home()
+        self.init_values()
         
     def widgets_sub(self):
         # Frames -------------------------------------
@@ -350,7 +370,6 @@ class HomeClient(Tk):
         # Entry --------------------------------
         self.entry_name = Entry(self.frame_2, width=23, bg=white, fg=black, font=(font_label), highlightthickness=1, relief='flat')
         self.combox_store = ttk.Combobox(self.frame_2, width=22, font=(font_label))
-        self.combox_serv = ttk.Combobox(self.frame_2, width=22, font=(font_label))
         self.combox_day = ttk.Combobox(self.frame_2, width=22, font=(font_label))
         self.combox_hour = ttk.Combobox(self.frame_2, width=22, font=(font_label))
         # Entry Lista ------------------
@@ -358,8 +377,9 @@ class HomeClient(Tk):
         self.list_agend = Listbox(self.frame_3, width=35, font=font_label,fg=collor_font)
 
         # Buttons ------------------------------
-        self.button_confirm = Button(self.frame_4, text="Agendar", width=10, height=1, relief='flat', font=(font_button), highlightthickness=1, bg=button_collor, fg=back)
-        self.button_client = Button(self.frame_4, text="Remover", width=10, height=1, relief='flat', font=(font_button), highlightthickness=1, bg=button_collor_r, fg=back)
+        self.button_confirm = Button(self.frame_4, text="Agendar", command=self.agendar, width=10, height=1, relief='flat', font=(font_button), highlightthickness=1, bg=button_collor, fg=back)
+        self.button_client = Button(self.frame_4, text="Remover", command=self.remove_agenda, width=10, height=1, relief='flat', font=(font_button), highlightthickness=1, bg=button_collor_r, fg=back)
+        self.button_list = Button(self.frame_4, text="Agendamentos", command=self.init_listbox, width=10, height=1, relief='flat', font=(font_button), highlightthickness=1, bg=button_collor_b, fg=back)
         self.button_ret = Button(self.frame_4, text="Retornar", command=self.ret_login, width=10, anchor=N, font=(font_button_ext), highlightthickness=-1, bg=back, fg=collor_font, relief='flat')
 
     def widgets_init_home(self):
@@ -380,28 +400,105 @@ class HomeClient(Tk):
         self.lab_h2_one.place(x=0, y=5) # Posição "Faca seu agendamento"
         self.lab_h2_two.place(x=15, y=5) # Posiçao "Seus agendamentos"
         # Labels Agendamento
-        self.lab_name.place(x=0, y=75)
-        self.lab_store.place(x=0, y=120)
-        self.lab_serv.place(x=0, y=168)
-        self.lab_day.place(x=0, y=215)
-        self.lab_hour.place(x=0, y=260)
+        self.lab_name.place(x=0, y=100)
+        self.lab_store.place(x=0, y=145)
+        self.lab_day.place(x=0, y=193)
+        self.lab_hour.place(x=0, y=240)
         # Label list
         self.lab_list.place(x=15, y=55)
 
         # Entry --------------------------------
-        self.entry_name.place(x=90, y=75)
-        self.combox_store.place(x=90, y=120)
-        self.combox_serv.place(x=90, y=168)
-        self.combox_day.place(x=90, y=215)
-        self.combox_hour.place(x=90, y=260)
+        self.entry_name.place(x=90, y=100)
+        self.combox_store.place(x=90, y=145)
+        self.combox_day.place(x=90, y=193)
+        self.combox_hour.place(x=90, y=240)
         # Entry Agendamento
         self.combox_list.place(x=130, y=55)
         self.list_agend.place(x=15, y=85)
 
         # Buttons -----------------------------------------
         self.button_confirm.place(x=200, y=0)
-        self.button_client.place(x=400, y=0)
+        self.button_list.place(x=400, y=0)
+        self.button_client.place(x=550, y=0)
         self.button_ret.place(x=0, y=15)
+            
+    def init_values(self):
+        # Init Values -----------------------------------------
+        self.list = AqrList("files/estabelecimentos.csv")
+        self.stores = [row[0] for row in self.list]
+        self.combox_store["values"] = self.stores
+        self.combox_list["values"] = self.stores
+        self.combox_day["values"] = [day for day in range(1, 8)]
+        self.combox_hour["values"] = [hour for hour in range(0, 25)]
+    
+        self.list = AqrList("files/clientes.csv")
+        for i in self.list:
+            if(int(self.id) == int(i[1])):
+                self.entry_name.insert(0, i[0])
+
+        self.entry_name["state"] = 'readonly'
+
+    def init_listbox(self):
+        # Verificar se foi selecionado alguma loja
+        if(self.combox_list.current() != -1):
+            # Busca o nome do arquivo e cria uma lista com ele
+            name_store = str(self.combox_list.get())
+            name_file_store = "files/scheduling/" + name_store + ".csv"
+            self.list = AqrList(name_file_store)
+            # conta o tamanho da lista
+            num_itens = len(self.list)
+            if(num_itens == 0):
+                messagebox.showerror("Erro", "Não há Agendamentos\n")
+            else:
+                # Adiciona somente os agendamentos do cliente especifico
+                list_agenda = [] 
+                for item in self.list:
+                    if int(item[2]) == self.id:
+                        list_agenda.append(item)
+
+                # Limpar o listbox
+                self.list_agend.delete(0, END)    
+                for item in list_agenda:
+                    item = "dia: " + item[0] + " - Hora: " + str(int(item[1])) + " - CPF: " + item[2]
+                    self.list_agend.insert(END, item)
+        else:
+            messagebox.showerror("Erro", "Nenhuma loja foi selecionada\nTente Novamente!")
+    
+    def remove_agenda(self):
+        # Verificar se foi selecionado alguma loja
+        if(self.combox_list.current() != -1):
+            # Armazena quantos itens tem na listbox
+            num_itens = self.list_agend.size()
+            # Cria a string do nome do arquivo a ser aberto
+            name_store = str(self.combox_list.get())
+            name_file_store = "files/scheduling/" + name_store + ".csv"
+            # Verifica se exite algum item
+            if(num_itens == 0):
+                messagebox.showerror("Erro", "Não há Agendamentos\nTente Novamente!")
+            else:
+                # Remove o primeiro agendamento daquele cliente naquela loja
+                RemoverAgendamento(file_name=name_file_store, cpf=int(self.id))
+                if num_itens == 1:
+                    self.list_agend.delete(0, END)
+                else:
+                    self.init_listbox()
+                # Exibe uma mensagem de sucesso na tela
+                messagebox.showinfo("Sucesso", "O primeiro agendamento foi removido com sucesso!")    
+        else:
+            messagebox.showerror("Erro", "Nenhuma loja foi selecionada\nTente Novamente!")
+
+    def agendar(self):
+        try:
+            value_day = int(self.combox_day.get())
+            value_hour = int(self.combox_hour.get())
+            value_store = str(self.combox_store.get())
+            value_name = str(self.entry_name.get())
+            name_store = "files/scheduling/" + value_store + ".csv"
+            RealizarAgendamento(file_name=name_store, dia=value_day, horario=value_hour, cpf=self.id, name=value_name)
+            OrdenacaoAgendamento(file_name=name_store)
+        except:
+            messagebox.showerror("Erro", "Verifique os dados e tente novamente!")
+            
 
     def ret_login(self):
         self.destroy()
@@ -422,6 +519,7 @@ class HomeStore(Tk):
         self.passnumber = passnumber
 
         self.widgets_init_home()
+        self.init_values()
         
     def widgets_sub(self):
         # Frames -------------------------------------
@@ -451,8 +549,8 @@ class HomeStore(Tk):
         self.list_agend = Listbox(self.frame_3, width=35, font=font_label,fg=collor_font)
 
         # Buttons ------------------------------
-        self.button_confirm = Button(self.frame_4, text="Cadastrar", width=10, height=1, relief='flat', font=(font_button), highlightthickness=1, bg=button_collor, fg=back)
-        self.button_client = Button(self.frame_4, text="Remover", width=10, height=1, relief='flat', font=(font_button), highlightthickness=1, bg=button_collor_r, fg=back)
+        self.button_confirm = Button(self.frame_4, text="Cadastrar", command=self.cad_servico, width=10, height=1, relief='flat', font=(font_button), highlightthickness=1, bg=button_collor, fg=back)
+        self.button_client = Button(self.frame_4, text="Remover", command=self.remove_agenda, width=10, height=1, relief='flat', font=(font_button), highlightthickness=1, bg=button_collor_r, fg=back)
         self.button_ret = Button(self.frame_4, text="Retornar", command=self.ret_login, width=10, anchor=N, font=(font_button_ext), highlightthickness=-1, bg=back, fg=collor_font, relief='flat')
 
     def widgets_init_home(self):
@@ -489,6 +587,75 @@ class HomeStore(Tk):
         self.button_client.place(x=400, y=0)
         self.button_ret.place(x=0, y=15)
 
+    def init_values(self):
+        self.list = AqrList("files/estabelecimentos.csv")
+        # Procura o nome da empresa na lista
+        for i in self.list:
+            if(int(self.id) == int(i[1])):
+                self.entry_name.insert(0, i[0])
+                name_story = i[0]
+
+        self.entry_name["state"] = 'readonly' #Desabilita o entry para o nome da empresa
+
+        name_file_store = "files/scheduling/" + name_story + ".csv"
+        self.list = AqrList(name_file_store)
+        num_itens = len(self.list)
+        # Limpar o listbox
+        self.list_agend.delete(0, END)
+        if num_itens == 0:
+            self.list_agend.insert(END, "Não há agendamentos")
+        # escrever cada item na listbox    
+        for item in self.list:
+            item = "dia: " + item[0] + " - Hora: " + str(int(item[1])) + " - Nome: " + item[3]
+            self.list_agend.insert(END, item)
+
+    def cad_servico(self):
+        name_value = str(self.entry_name.get())
+        serv_value = self.entry_serv.get()
+        pay_value = self.entry_pay.get()
+        if(len(pay_value) == 0 or len(serv_value) == 0):
+            messagebox.showerror("Erro", "Verifique os dados e tente novamente\n")
+        else:
+            messagebox.showinfo("Sucesso", "O Serviço foi cadastrado com sucesso\n")
+
+    def remove_agenda(self):
+        # Armazena quantos itens tem na listbox
+        num_itens = self.list_agend.size()
+
+        # Verifica se exite algum item
+        if num_itens == 0 or self.list_agend.get(0) == "Não há agendamentos":
+            messagebox.showerror("Erro", "Não há Agendamentos\n")
+        else:
+            # Cria a string do nome do arquivo a ser aberto
+            name_store = str(self.entry_name.get())
+            name_file_store = "files/scheduling/" + name_store + ".csv"
+            # Obter agendamento selecionado
+            selection = self.list_agend.curselection()
+            if selection:
+                # Tranformar o arquivo em lista
+                self.list = AqrList(name_file_store)
+                # Obtém o índice do primeiro item selecionado
+                index = selection[0]
+                # Obtém o texto do item selecionado
+                name_client = self.list_agend.get(index)
+                # Faz o tratamento da string do cliente
+                name_client_list = str(name_client).split()
+                name_client = name_client_list[-1]
+
+                # Busca o cpf do cliente selecionado
+                for item in self.list:
+                    name_in_list = str(item[3]).replace(" ", "") # Faz o tratamento da string da lista
+                    if name_client == name_in_list:
+                        id_client = int(item[2]) 
+                
+                # Remove o primeiro agendamento daquele cliente naquela loja
+                RemoverAgendamento(file_name=name_file_store, cpf=id_client)
+                self.init_values()
+                # Exibe uma mensagem de sucesso na tela
+                messagebox.showinfo("Sucesso", "O primeiro agendamento deste cliente foi removido com sucesso!")
+            else:
+                messagebox.showerror("Erro", "Não foi selecionado nenhum agendamento\nTente Novamente!")
+        
     def ret_login(self):
         self.destroy()
         login = Login("350x350")
