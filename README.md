@@ -21,7 +21,6 @@
 - [x] Agendamento
 - [x] Integração Python e C
 - [x] Tela de recuperação de senha
-- [ ] Integração SQL
 
 ## 📸 Screen Shots
 <table>
