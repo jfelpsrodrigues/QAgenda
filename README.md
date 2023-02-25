@@ -3,8 +3,19 @@
 </h1>
 
 <h4 align="center"> 
-	🚧 Software de Gerenciamento de Rotinas ❕ em construção... 🚧
+	🎉 Software de Gerenciamento de Rotinas ❕ Finalizado!!! 🎉
 </h4>
+
+<p align="center">
+ <a href="#-sobre-o-projeto">Sobre o Projeto</a> •
+ <a href="#%EF%B8%8F-tecnologias">Tecnologias</a> • 
+ <a href="#construction_worker-features">Features</a> • 
+ <a href="#-screen-shots">Screen Shots</a> • 
+ <a href="#-pr%C3%A9-requisitos">Pré-requisitos</a> • 
+ <a href="#-rodando-a-aplica%C3%A7%C3%A3o">Rodando a aplicação</a> • 
+ <a href="#-licen%C3%A7a">Licença</a> • 
+ <a href="#-autores">Autores</a>
+</p>
 
 ## 💻 Sobre o Projeto
 <p>
@@ -13,14 +24,20 @@
   Os clientes teram acesso a uma gama de opções de horários e estabelecimentos de uma maneira confortavel e eficiente.
 </p>
 
+## 🛠️ Tecnologias
+
+- [Language C](https://www.w3schools.com/c/c_intro.php)
+- [Python3](https://www.python.org/)
+- [Tkinter](https://docs.python.org/3/library/tkinter.html)
+
 ## :construction_worker: Features
 
 - [x] Cadastro de microempresas
 - [x] Cadastro de cliente
 - [x] Cadastro de serviços
 - [x] Agendamento
-- [x] Integração Python e C
 - [x] Tela de recuperação de senha
+- [x] Integração Python e C
 
 ## 📸 Screen Shots
 <table>
@@ -76,6 +93,8 @@ $ python3 main.py
 
 ## 📝 Licença
 Este projeto esta sobe a licença MIT.
+
+## 💬 Autores
 
 Projeto feito com ❤️ por:  
 :stuck_out_tongue_winking_eye: [Arthur Benjamin](https://github.com/benjamimarthur)  
